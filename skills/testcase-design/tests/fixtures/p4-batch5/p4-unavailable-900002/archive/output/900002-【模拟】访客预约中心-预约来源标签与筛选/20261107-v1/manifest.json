@@ -1,0 +1,105 @@
+{
+  "schema_version": "1",
+  "requirement": {
+    "id": "900002",
+    "name": "【模拟】访客预约中心-预约来源标签与筛选"
+  },
+  "version_id": "20261107-v1",
+  "created_at": "2026-11-07T20:05:24+08:00",
+  "delivery_status": "complete",
+  "artifacts": [
+    {
+      "category": "testcases",
+      "role": "markdown",
+      "path": "20261107-v1/testcases/testcases.md",
+      "source_version": "20261107-v1",
+      "change": "added",
+      "sha256": "00f582977294ee712bc186ead1ff19d2019469dcd4be9b3bad166561a8d4c1a7"
+    },
+    {
+      "category": "testcases",
+      "role": "oracle",
+      "path": "20261107-v1/testcases/oracle.json",
+      "source_version": "20261107-v1",
+      "change": "added",
+      "sha256": "02ff59b26e0ecd06cb4580fe98fa15eed09f23e3bccd0ec636f23095accb15ea"
+    },
+    {
+      "category": "testcases",
+      "role": "xmind",
+      "path": "20261107-v1/testcases/testcases.xmind",
+      "source_version": "20261107-v1",
+      "change": "added",
+      "sha256": "b7fb3b8ca755dd36c99c82e1ab1b8345000306aff2849e0d76dc1db86d88897f"
+    }
+  ],
+  "case_snapshot": [
+    {
+      "case_id": "QA-900002-a785032837",
+      "revision": 1,
+      "status": "added",
+      "content_sha256": "3bbdba7e2b185913f7ca76b398923ad23c80de104fd9f63a8cc35811f8fe4b07"
+    },
+    {
+      "case_id": "QA-900002-d59281f97d",
+      "revision": 1,
+      "status": "added",
+      "content_sha256": "98e6745bd84204c8d352cd90a1fdc7c892b661f926f0d20d0bb2717d9f32f35b"
+    },
+    {
+      "case_id": "QA-900002-108e7a4ba9",
+      "revision": 1,
+      "status": "added",
+      "content_sha256": "5ad6d0fb098a93fe8ec9344346769a4904c9fa06986d09dd020ee8a3a9de5616"
+    },
+    {
+      "case_id": "QA-900002-5b4fd34217",
+      "revision": 1,
+      "status": "added",
+      "content_sha256": "921acc0431d7bd8c32c7553e5cb3a873889f877ef4fe51d9b3ee6e30a98c8e73"
+    },
+    {
+      "case_id": "QA-900002-ad06893656",
+      "revision": 1,
+      "status": "added",
+      "content_sha256": "0d0b46b7e97fff0ffa24784f96840a6dda60f2f096a82505ed6e98014b4d8ee9"
+    },
+    {
+      "case_id": "QA-900002-0b9fc655b6",
+      "revision": 1,
+      "status": "added",
+      "content_sha256": "6bed14b6d474fb28f2ef81877ed8db88f0f44c57e6e9815c083a6da5eec4665c"
+    },
+    {
+      "case_id": "QA-900002-65f2011172",
+      "revision": 1,
+      "status": "added",
+      "content_sha256": "53e41266a5c3f15726e5eec6e5b8d71d359c88b87de7e0bc238c7e5f7fab21dc"
+    },
+    {
+      "case_id": "QA-900002-e9dfc5a526",
+      "revision": 1,
+      "status": "added",
+      "content_sha256": "f1f798e86d9006cd6afd52c1a910a2d197492d2576cc3c2e7066b145db107f4d"
+    }
+  ],
+  "case_count": 8,
+  "retired_case_count": 0,
+  "validation": {
+    "markdown_oracle": "STRUCTURE_PASS",
+    "xmind_readback": "XMIND_READBACK_PASS",
+    "semantic_review": "NOT_AUTOMATED"
+  },
+  "case_changes": {
+    "added": [
+      "QA-900002-a785032837",
+      "QA-900002-d59281f97d",
+      "QA-900002-108e7a4ba9",
+      "QA-900002-5b4fd34217",
+      "QA-900002-ad06893656",
+      "QA-900002-0b9fc655b6",
+      "QA-900002-65f2011172",
+      "QA-900002-e9dfc5a526"
+    ]
+  }
+}

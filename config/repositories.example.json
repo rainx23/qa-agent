@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "inventory_verified_at": "",
+  "workspace_roots": [
+    {
+      "id": "example-backend-workspace",
+      "type": "backend",
+      "path": "C:/REPLACE_WITH_YOUR_WORKSPACE",
+      "kind": "group",
+      "git_repository": false
+    }
+  ],
+  "repositories": [
+    {
+      "id": "example-service",
+      "name": "example-service",
+      "type": "backend",
+      "path": "C:/REPLACE_WITH_YOUR_WORKSPACE/example-service",
+      "remote": "origin",
+      "branch_policy": "Choose verified base/head refs for the current task; do not assume branch names."
+    }
+  ],
+  "resolution_rules": {
+    "registered_paths_are_lookup_authority": true,
+    "workspace_roots_are_not_git_repositories": true,
+    "remote_name": "origin",
+    "branch_names_are_not_hardcoded": true,
+    "branch_selection": "Determine target and baseline branches from the actual request and confirmed repository policy.",
+    "unregistered_repository": "Only inspect a relevant configured workspace root; ask for a path if ambiguous.",
+    "do_not_scan_all_drives_or_unrelated_groups": true
+  }
+}

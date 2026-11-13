@@ -1,0 +1,48 @@
+# QA Agent: single local project, Git tracks only reusable rules, code, and fixtures.
+# Ignoring a path does not delete any local file.
+
+# Actual runtime work, formal delivery, and internal investigation evidence.
+/.qa-work/
+/output/
+/implementation/
+/artifacts/
+/.playwright-cli/
+
+# Local-only workspace and organization configuration.
+# Explicit examples remain eligible for Git tracking.
+/config/*
+!/config/*.example.json
+
+# Personal project decisions and implementation history are not public runtime inputs.
+/QA-AGENT-DECISIONS.md
+/QA-AGENT-IMPLEMENTATION-LOG.md
+/QA-AGENT-PROJECT-SETUP.md
+
+# User-specific business knowledge. Keep the empty module root via .gitkeep.
+/knowledge/modules/*
+!/knowledge/modules/.gitkeep
+
+# Platform receipts: the reusable README remains public.
+/platform-sync/*
+!/platform-sync/README.md
+
+# Organization-specific optional skill: retained locally, not distributed.
+/skills/row-permission-config/
+
+# Local editor settings, environment files and Python caches.
+/.idea/
+/.vscode/
+/*.code-workspace
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Locally generated review packages (not tracked).
+/*.zip
+/*.tar
+/*.tgz

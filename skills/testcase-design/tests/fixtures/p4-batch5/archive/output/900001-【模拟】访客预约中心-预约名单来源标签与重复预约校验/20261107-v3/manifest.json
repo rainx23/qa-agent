@@ -1,0 +1,149 @@
+{
+  "schema_version": "1",
+  "requirement": {
+    "id": "900001",
+    "name": "【模拟】访客预约中心-预约名单来源标签与重复预约校验"
+  },
+  "version_id": "20261107-v3",
+  "created_at": "2026-11-07T16:47:36+08:00",
+  "delivery_status": "complete",
+  "artifacts": [
+    {
+      "category": "testcases",
+      "role": "markdown",
+      "path": "20261107-v3/testcases/testcases.md",
+      "source_version": "20261107-v3",
+      "change": "updated",
+      "sha256": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1"
+    },
+    {
+      "category": "testcases",
+      "role": "oracle",
+      "path": "20261107-v3/testcases/oracle.json",
+      "source_version": "20261107-v3",
+      "change": "updated",
+      "sha256": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483"
+    },
+    {
+      "category": "testcases",
+      "role": "xmind",
+      "path": "20261107-v3/testcases/testcases.xmind",
+      "source_version": "20261107-v3",
+      "change": "updated",
+      "sha256": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+    }
+  ],
+  "case_snapshot": [
+    {
+      "case_id": "QA-900001-ecf333479b",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "bc2e5b3ff8779f6022681dad24380f2adab71731a391487a4e0a94dc6f448c65"
+    },
+    {
+      "case_id": "QA-900001-068fdb649b",
+      "revision": 2,
+      "status": "updated",
+      "content_sha256": "c28e190f3f0e23ee444e8f18d70b0a949e15d92a3703142332972510fdc9697e"
+    },
+    {
+      "case_id": "QA-900001-0bdfba9f35",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "962a334bcdfa5b74bb1796480e083160fdbc1439e21fe3dc649eb50eea307f7c"
+    },
+    {
+      "case_id": "QA-900001-448562262a",
+      "revision": 2,
+      "status": "updated",
+      "content_sha256": "ef76f4351e1f3bd9b94b3059d776a8e2cfa34ee5bf4d3950a923b318fa733726"
+    },
+    {
+      "case_id": "QA-900001-92eb4b22c0",
+      "revision": 2,
+      "status": "updated",
+      "content_sha256": "d177ff8283706b4346f1477237d36b3f6c3f3c6641c71bcd63e3a66319b80595"
+    },
+    {
+      "case_id": "QA-900001-2c327e43cf",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "b37f232715441daf94433061854cfe5a318fd21c71328e89862bf9ca042e417a"
+    },
+    {
+      "case_id": "QA-900001-e47cb831e2",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "50869479a841694fc6cb629da6196dc6e67f5446773de9f45a8f6a0e7016ad26"
+    },
+    {
+      "case_id": "QA-900001-64ca709601",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "52e2cad1c1d757dcfa4fd7db042490819cb0cc10a53cb28b6475dfad7cc6dc21"
+    },
+    {
+      "case_id": "QA-900001-3b906ab9e7",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "fbd033b0884d62f41856bd3d790b48c62afd9060c1ac7e64d8213b4a115375cd"
+    },
+    {
+      "case_id": "QA-900001-489cea99a2",
+      "revision": 2,
+      "status": "unchanged",
+      "content_sha256": "80e28fb3bdc2480136a20e4270e2bccd977ee21cf57cda932a9531d92c0ac0b8"
+    },
+    {
+      "case_id": "QA-900001-ca3dbd710f",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "59d5afa02a6e3d1b58b9a4b2a3d1d33580dff4e8ae8937d31efd7f307057c1a3"
+    },
+    {
+      "case_id": "QA-900001-378f582138",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "f1814fc5c9dea8d8f053bcb1486b4f9f948ba5922e4a3e14569c781cdd69477b"
+    },
+    {
+      "case_id": "QA-900001-2715c029c9",
+      "revision": 1,
+      "status": "retired",
+      "content_sha256": "9c5fddd76dafe36b0be9dce7b69b40ff2ffab09efc2051fbd7c4ab1e67a808d9",
+      "retirement_reason": "该用例唯一目标是验证「未知来源」作为独立筛选项并可筛选；需求仅确认未识别来源在列表显示「未知来源」，未确认其必须成为筛选项。该目标不属于当前已确认范围，故从当前有效用例集退役并保留历史身份；不代表业务功能已确认取消。列表展示仍由 QA-900001-068fdb649b 覆盖，已知来源筛选时排除其他来源（含未识别来源）由修订后的 QA-900001-448562262a 覆盖。后续如产品确认未知来源筛选，应另行新增正式用例。"
+    }
+  ],
+  "case_count": 12,
+  "retired_case_count": 1,
+  "validation": {
+    "markdown_oracle": "STRUCTURE_PASS",
+    "xmind_readback": "XMIND_READBACK_PASS",
+    "semantic_review": "NOT_AUTOMATED"
+  },
+  "case_changes": {
+    "updated": [
+      {
+        "case_id": "QA-900001-068fdb649b",
+        "from_revision": 1,
+        "to_revision": 2
+      },
+      {
+        "case_id": "QA-900001-448562262a",
+        "from_revision": 1,
+        "to_revision": 2
+      },
+      {
+        "case_id": "QA-900001-92eb4b22c0",
+        "from_revision": 1,
+        "to_revision": 2
+      }
+    ],
+    "retired": [
+      {
+        "case_id": "QA-900001-2715c029c9",
+        "reason": "该用例唯一目标是验证「未知来源」作为独立筛选项并可筛选；需求仅确认未识别来源在列表显示「未知来源」，未确认其必须成为筛选项。该目标不属于当前已确认范围，故从当前有效用例集退役并保留历史身份；不代表业务功能已确认取消。列表展示仍由 QA-900001-068fdb649b 覆盖，已知来源筛选时排除其他来源（含未识别来源）由修订后的 QA-900001-448562262a 覆盖。后续如产品确认未知来源筛选，应另行新增正式用例。"
+      }
+    ]
+  }
+}

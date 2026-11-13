@@ -1,0 +1,135 @@
+{
+  "schema_version": "1",
+  "requirement": {
+    "id": "900001",
+    "name": "【模拟】访客预约中心-预约名单来源标签与重复预约校验"
+  },
+  "version_id": "20261107-v2",
+  "created_at": "2026-11-07T02:18:11+08:00",
+  "delivery_status": "complete",
+  "artifacts": [
+    {
+      "category": "testcases",
+      "role": "markdown",
+      "path": "20261107-v2/testcases/testcases.md",
+      "source_version": "20261107-v2",
+      "change": "updated",
+      "sha256": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1"
+    },
+    {
+      "category": "testcases",
+      "role": "oracle",
+      "path": "20261107-v1/testcases/oracle.json",
+      "source_version": "20261107-v1",
+      "change": "unchanged",
+      "sha256": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5"
+    },
+    {
+      "category": "testcases",
+      "role": "xmind",
+      "path": "20261107-v2/testcases/testcases.xmind",
+      "source_version": "20261107-v2",
+      "change": "updated",
+      "sha256": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76"
+    }
+  ],
+  "case_snapshot": [
+    {
+      "case_id": "QA-900001-ecf333479b",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "bc2e5b3ff8779f6022681dad24380f2adab71731a391487a4e0a94dc6f448c65"
+    },
+    {
+      "case_id": "QA-900001-068fdb649b",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "9a82d43f3ba099c2e00bab24608d1d16ab5606d8a9a4c1e2ff30aad64005b9ce"
+    },
+    {
+      "case_id": "QA-900001-0bdfba9f35",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "962a334bcdfa5b74bb1796480e083160fdbc1439e21fe3dc649eb50eea307f7c"
+    },
+    {
+      "case_id": "QA-900001-448562262a",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "0948c0a2f86ef903a0048e9743422773e9986b41f91bac3c4945447c97faf460"
+    },
+    {
+      "case_id": "QA-900001-92eb4b22c0",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "14f8835aab696d597516b84da92d5a655178cb3a7ee96ed4d26fa0e31be7ec2e"
+    },
+    {
+      "case_id": "QA-900001-2715c029c9",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "9c5fddd76dafe36b0be9dce7b69b40ff2ffab09efc2051fbd7c4ab1e67a808d9"
+    },
+    {
+      "case_id": "QA-900001-2c327e43cf",
+      "revision": 1,
+      "status": "added",
+      "content_sha256": "b37f232715441daf94433061854cfe5a318fd21c71328e89862bf9ca042e417a"
+    },
+    {
+      "case_id": "QA-900001-e47cb831e2",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "50869479a841694fc6cb629da6196dc6e67f5446773de9f45a8f6a0e7016ad26"
+    },
+    {
+      "case_id": "QA-900001-64ca709601",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "52e2cad1c1d757dcfa4fd7db042490819cb0cc10a53cb28b6475dfad7cc6dc21"
+    },
+    {
+      "case_id": "QA-900001-3b906ab9e7",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "fbd033b0884d62f41856bd3d790b48c62afd9060c1ac7e64d8213b4a115375cd"
+    },
+    {
+      "case_id": "QA-900001-489cea99a2",
+      "revision": 2,
+      "status": "updated",
+      "content_sha256": "80e28fb3bdc2480136a20e4270e2bccd977ee21cf57cda932a9531d92c0ac0b8"
+    },
+    {
+      "case_id": "QA-900001-ca3dbd710f",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "59d5afa02a6e3d1b58b9a4b2a3d1d33580dff4e8ae8937d31efd7f307057c1a3"
+    },
+    {
+      "case_id": "QA-900001-378f582138",
+      "revision": 1,
+      "status": "unchanged",
+      "content_sha256": "f1814fc5c9dea8d8f053bcb1486b4f9f948ba5922e4a3e14569c781cdd69477b"
+    }
+  ],
+  "case_count": 13,
+  "retired_case_count": 0,
+  "validation": {
+    "markdown_oracle": "STRUCTURE_PASS",
+    "xmind_readback": "XMIND_READBACK_PASS",
+    "semantic_review": "NOT_AUTOMATED"
+  },
+  "case_changes": {
+    "added": [
+      "QA-900001-2c327e43cf"
+    ],
+    "updated": [
+      {
+        "case_id": "QA-900001-489cea99a2",
+        "from_revision": 1,
+        "to_revision": 2
+      }
+    ]
+  }
+}

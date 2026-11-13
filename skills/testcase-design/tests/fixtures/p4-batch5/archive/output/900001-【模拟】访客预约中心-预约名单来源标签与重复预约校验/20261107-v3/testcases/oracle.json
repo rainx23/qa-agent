@@ -1,0 +1,146 @@
+{
+  "schema_version": "1",
+  "requirement": {
+    "id": "900001",
+    "name": "【模拟】访客预约中心-预约名单来源标签与重复预约校验"
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "description": "虚构需求 900001 正文（变更内容、不变范围、未说明事项）",
+      "locator": "skills/testcase-design/tests/fixtures/p4-batch5/requirement-900001.md"
+    },
+    {
+      "id": "S2",
+      "description": "P4 隔离知识模块正式可复用业务规则 VC-BR-001（formal_reusable / user_confirmed，模拟来源）",
+      "locator": "skills/testcase-design/tests/fixtures/p4-batch5/knowledge/modules/sim-visit-center/business-rules.json#VC-BR-001"
+    },
+    {
+      "id": "S3",
+      "description": "P4 隔离知识模块中的候选、冲突与未知记录（VC-BR-002、VC-BR-003、VC-IF-001），仅用于边界核对，不作为预期依据",
+      "locator": "skills/testcase-design/tests/fixtures/p4-batch5/knowledge/modules/sim-visit-center/"
+    }
+  ],
+  "obligations": [
+    {
+      "id": "O1",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "预约名单列表新增「来源标签」列，位置紧随「预约时间」列之后",
+      "expected_outcome": "表头出现来源标签列且位于预约时间列右侧，其余原有列顺序不变",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O2",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "来源标签取值固定为员工推荐、官网、小程序、电话回访四项，未识别来源的记录显示「未知来源」",
+      "expected_outcome": "四种已识别来源分别展示对应固定枚举文案；未识别来源展示「未知来源」；不出现其他未定义的来源展示文案",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O3",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "来源标签筛选为下拉单选，四种明确来源分别可单选；选择「全部」时展示所有来源记录",
+      "expected_outcome": "选择任一四种明确来源后仅展示该来源记录；选择「全部」时展示所有来源记录",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O4",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "来源标签筛选项文案必须与列表中相同来源的展示文案完全一致",
+      "expected_outcome": "四种明确来源的筛选项文案分别与列表中相同来源的展示文案完全一致，无同义异写或错别字；此规则不推导未识别来源必须成为独立筛选选项",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O5",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "同一手机号 + 同一到访日期 + 同一被访人的预约提交时拦截，并提示「该访客当日已预约该被访人，请勿重复提交」",
+      "expected_outcome": "提交被拦截且不生成新记录，提示文案与需求一致，该组合仅保留原有一条预约",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O6",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "手机号相同但到访日期不同，或被访人不同时，允许提交预约",
+      "expected_outcome": "提交成功并生成新记录，不出现拦截提示，原预约记录不受影响",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O7",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "预约详情弹窗同步展示来源标签，且取值与列表一致",
+      "expected_outcome": "弹窗展示来源标签字段，取值与同一记录的列表展示一致",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O8",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "预约名单导出增加来源标签列，导出列顺序与页面列表列顺序一致",
+      "expected_outcome": "导出文件包含来源标签列，位置紧随预约时间列，数据取值与页面一致",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O9",
+      "source_ids": [
+        "S2"
+      ],
+      "rule": "未手工选择查询条件时，预约名单默认展示今日起未来 7 天内且状态不为「已取消」的预约记录",
+      "expected_outcome": "默认结果仅含 7 天窗口内的非取消预约，窗口外记录与已取消记录不出现",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O10",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "原有按到访日期、预约状态查询以及分页、排序逻辑保持不变",
+      "expected_outcome": "到访日期与预约状态查询条件同时生效，翻页与排序结果正确且与其他筛选互不覆盖",
+      "certainty": "confirmed"
+    }
+  ],
+  "open_questions": [
+    {
+      "source_ids": [
+        "S1"
+      ],
+      "question": "已取消的预约是否参与重复预约校验？需求未说明。",
+      "impact": "该场景未设计预期；不影响已明确的重复拦截条件与不同日期/不同被访人放行场景的提升质量判定"
+    },
+    {
+      "source_ids": [
+        "S3"
+      ],
+      "question": "P4 候选知识 VC-BR-002 声称来源标签为「小程序」时额外展示「预约渠道明细」列，但无需求或用户确认。",
+      "impact": "未纳入任何用例预期；若后续确认存在该列，需要补充对应展示与筛选用例"
+    },
+    {
+      "source_ids": [
+        "S3"
+      ],
+      "question": "P4 未知项 VC-IF-001：「被访人」快捷查询的 DEV 配置 enabled_flag 为空，无法证明是否启用。",
+      "impact": "未设计与被访人快捷查询相关的预期；不影响通用查询、来源标签筛选及既有查询条件的用例"
+    },
+    {
+      "source_ids": [
+        "S1"
+      ],
+      "question": "未识别来源在列表中显示「未知来源」后，是否也必须作为独立选项出现在来源标签下拉中并支持筛选？需求仅明确列表展示，未明确筛选选项范围。",
+      "impact": "不把未知来源筛选作为当前正式用例预期；列表展示由现有用例覆盖，已知来源筛选仍验证未识别来源被排除。待取得明确业务确认后再新增相应用例。"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "module_id": "sim-visit-center",
+  "category": "interactions-fields",
+  "simulation_notice": "虚构知识，仅用于 P4 第五批隔离验收，不代表任何真实配置。",
+  "fields": [
+    {
+      "id": "VC-IF-001",
+      "page_object_id": "sim-visit-list",
+      "field": "被访人",
+      "control_type": "快捷查询",
+      "knowledge_status": "unknown",
+      "dev_config": {
+        "config_code": "sim_visit_quick_search",
+        "enabled_flag": null,
+        "read_status": "READ_EMPTY_OR_BLOCKED",
+        "read_at": "2026-10-30"
+      },
+      "note": "DEV 配置读取未取得 enabled_flag，不能证明快捷查询已启用；不得据此设计已生效的筛选预期。",
+      "required_validation": "需在 DEV 读取配置或页面实际验证启用状态"
+    }
+  ]
+}

@@ -1,0 +1,487 @@
+{
+  "title": "P4 Batch 5 incremental rejection probes",
+  "date": "2026-11-07",
+  "scope": "isolated temporary copies only; no formal archive writes",
+  "python": {
+    "executable": "<PYTHON_ROOT>\\python.exe",
+    "version": "3.11.7 (tags/v3.11.7:fa7a6f2, Dec  4 2023, 19:24:49) [MSC v.1937 64 bit (AMD64)]",
+    "PYTHONUTF8": "1"
+  },
+  "baseline_archive": "skills/testcase-design/tests/fixtures/p4-batch5/archive/output/900001-【模拟】访客预约中心-预约名单来源标签与重复预约校验",
+  "baseline_snapshot": {
+    "versions": [
+      "20261107-v1",
+      "20261107-v2",
+      "20261107-v3"
+    ],
+    "files": {
+      "20261107-v1/manifest.json": "d21e056d23c743abbe2db155b4dfad7f3d607c7844c4253ef8e91b6b3a382bc0",
+      "20261107-v1/testcases/oracle.json": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5",
+      "20261107-v1/testcases/testcases.md": "f43430b6316aa6b4146e81899e54e984b5e3ae5dfc445a39769cba5c3d773031",
+      "20261107-v1/testcases/testcases.xmind": "4be37d06063f430cb276b0ba2030f893ebdeb055355c89c86336dfc281c733b9",
+      "20261107-v2/manifest.json": "4e939dd3c57c4e1caee43cb07f675c1a1de6b47d89e47a26ef215e0320b589b0",
+      "20261107-v2/testcases/testcases.md": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1",
+      "20261107-v2/testcases/testcases.xmind": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76",
+      "20261107-v3/manifest.json": "fb00d8b7d97c9855a12b508e53b8bfe25c0e5d1f7b29a3d78e883f46195197f3",
+      "20261107-v3/testcases/oracle.json": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483",
+      "20261107-v3/testcases/testcases.md": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1",
+      "20261107-v3/testcases/testcases.xmind": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+    }
+  },
+  "source_fixture_unchanged": true,
+  "source_snapshot_after": {
+    "versions": [
+      "20261107-v1",
+      "20261107-v2",
+      "20261107-v3"
+    ],
+    "files": {
+      "20261107-v1/manifest.json": "d21e056d23c743abbe2db155b4dfad7f3d607c7844c4253ef8e91b6b3a382bc0",
+      "20261107-v1/testcases/oracle.json": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5",
+      "20261107-v1/testcases/testcases.md": "f43430b6316aa6b4146e81899e54e984b5e3ae5dfc445a39769cba5c3d773031",
+      "20261107-v1/testcases/testcases.xmind": "4be37d06063f430cb276b0ba2030f893ebdeb055355c89c86336dfc281c733b9",
+      "20261107-v2/manifest.json": "4e939dd3c57c4e1caee43cb07f675c1a1de6b47d89e47a26ef215e0320b589b0",
+      "20261107-v2/testcases/testcases.md": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1",
+      "20261107-v2/testcases/testcases.xmind": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76",
+      "20261107-v3/manifest.json": "fb00d8b7d97c9855a12b508e53b8bfe25c0e5d1f7b29a3d78e883f46195197f3",
+      "20261107-v3/testcases/oracle.json": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483",
+      "20261107-v3/testcases/testcases.md": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1",
+      "20261107-v3/testcases/testcases.xmind": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+    }
+  },
+  "temporary_copies_cleaned": true,
+  "probes": [
+    {
+      "probe_id": "same_content",
+      "description": "重复发布完全相同的 v3 内容",
+      "expected_base_version": "20261107-v3",
+      "initial_validate": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "validate",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-vn_zo6uv\\requirement-archive"
+        ],
+        "exit_code": 0,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIk1BTklGRVNUX0hJU1RPUllfUEFTUyIsDQogICJ2ZXJzaW9uX2NvdW50IjogMywNCiAgImhpc3RvcmljYWxfYXJ0aWZhY3RfZmlsZV9jb3VudCI6IDgsDQogICJsYXRlc3RfdmVyc2lvbiI6ICIyMDI2MTEwNy12MyIsDQogICJhcnRpZmFjdF9jb3VudCI6IDMsDQogICJjYXNlX2NvdW50IjogMTIsDQogICJyZXRpcmVkX2Nhc2VfY291bnQiOiAxDQp9DQo=",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"MANIFEST_HISTORY_PASS\",\r\n  \"version_count\": 3,\r\n  \"historical_artifact_file_count\": 8,\r\n  \"latest_version\": \"20261107-v3\",\r\n  \"artifact_count\": 3,\r\n  \"case_count\": 12,\r\n  \"retired_case_count\": 1\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "inspect": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "inspect",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-vn_zo6uv\\requirement-archive"
+        ],
+        "exit_code": 0,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIk1BTklGRVNUX0JBU0VMSU5FX1JFQURZIiwNCiAgInZlcnNpb25fY291bnQiOiAzLA0KICAibGF0ZXN0X3ZlcnNpb24iOiAiMjAyNjExMDctdjMiLA0KICAibWFuaWZlc3RfcGF0aCI6ICJDOlxcVXNlcnNcXDcxMjQ3MlxcQXBwRGF0YVxcTG9jYWxcXFRlbXBcXHA0LWluY3JlbWVudGFsLXByb2JlLXZuX3pvNnV2XFxyZXF1aXJlbWVudC1hcmNoaXZlXFwyMDI2MTEwNy12M1xcbWFuaWZlc3QuanNvbiIsDQogICJyZXF1aXJlbWVudCI6IHsNCiAgICAiaWQiOiAiOTAwMDAxIiwNCiAgICAibmFtZSI6ICJcdTMwMTBcdTZhMjFcdTYyZGZcdTMwMTFcdThiYmZcdTViYTJcdTk4ODRcdTdlYTZcdTRlMmRcdTVmYzMtXHU5ODg0XHU3ZWE2XHU1NDBkXHU1MzU1XHU2NzY1XHU2ZTkwXHU2ODA3XHU3YjdlXHU0ZTBlXHU5MWNkXHU1OTBkXHU5ODg0XHU3ZWE2XHU2ODIxXHU5YThjIg0KICB9LA0KICAiY2FzZV9jb3VudCI6IDEyLA0KICAicmV0aXJlZF9jYXNlX2NvdW50IjogMSwNCiAgIm1hcmtkb3duX3BhdGgiOiAiQzpcXFVzZXJzXFw3MTI0NzJcXEFwcERhdGFcXExvY2FsXFxUZW1wXFxwNC1pbmNyZW1lbnRhbC1wcm9iZS12bl96bzZ1dlxccmVxdWlyZW1lbnQtYXJjaGl2ZVxcMjAyNjExMDctdjNcXHRlc3RjYXNlc1xcdGVzdGNhc2VzLm1kIg0KfQ0K",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"MANIFEST_BASELINE_READY\",\r\n  \"version_count\": 3,\r\n  \"latest_version\": \"20261107-v3\",\r\n  \"manifest_path\": \"<USER_HOME>\\\\AppData\\\\Local\\\\Temp\\\\p4-incremental-probe-vn_zo6uv\\\\requirement-archive\\\\20261107-v3\\\\manifest.json\",\r\n  \"requirement\": {\r\n    \"id\": \"900001\",\r\n    \"name\": \"\\u3010\\u6a21\\u62df\\u3011\\u8bbf\\u5ba2\\u9884\\u7ea6\\u4e2d\\u5fc3-\\u9884\\u7ea6\\u540d\\u5355\\u6765\\u6e90\\u6807\\u7b7e\\u4e0e\\u91cd\\u590d\\u9884\\u7ea6\\u6821\\u9a8c\"\r\n  },\r\n  \"case_count\": 12,\r\n  \"retired_case_count\": 1,\r\n  \"markdown_path\": \"<USER_HOME>\\\\AppData\\\\Local\\\\Temp\\\\p4-incremental-probe-vn_zo6uv\\\\requirement-archive\\\\20261107-v3\\\\testcases\\\\testcases.md\"\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "xmind_generation": null,
+      "publish_attempt": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "publish",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-vn_zo6uv\\requirement-archive",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-vn_zo6uv\\.qa-work\\publish-spec.json"
+        ],
+        "exit_code": 1,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIkZBSUwiLA0KICAiZXJyb3IiOiAiXHU2NzJjXHU2YjIxXHU2Y2ExXHU2NzA5XHU1YjllXHU4ZDI4XHU1MTg1XHU1YmI5XHU2MjE2XHU0ZWE0XHU0ZWQ4XHU3MmI2XHU2MDAxXHU1M2Q4XHU1MzE2XHVmZjBjXHU0ZTBkXHU1MjFiXHU1ZWZhXHU2NWIwXHU2YjYzXHU1ZjBmXHU3MjQ4XHU2NzJjIg0KfQ0K",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"FAIL\",\r\n  \"error\": \"\\u672c\\u6b21\\u6ca1\\u6709\\u5b9e\\u8d28\\u5185\\u5bb9\\u6216\\u4ea4\\u4ed8\\u72b6\\u6001\\u53d8\\u5316\\uff0c\\u4e0d\\u521b\\u5efa\\u65b0\\u6b63\\u5f0f\\u7248\\u672c\"\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "post_validate": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "validate",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-vn_zo6uv\\requirement-archive"
+        ],
+        "exit_code": 0,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIk1BTklGRVNUX0hJU1RPUllfUEFTUyIsDQogICJ2ZXJzaW9uX2NvdW50IjogMywNCiAgImhpc3RvcmljYWxfYXJ0aWZhY3RfZmlsZV9jb3VudCI6IDgsDQogICJsYXRlc3RfdmVyc2lvbiI6ICIyMDI2MTEwNy12MyIsDQogICJhcnRpZmFjdF9jb3VudCI6IDMsDQogICJjYXNlX2NvdW50IjogMTIsDQogICJyZXRpcmVkX2Nhc2VfY291bnQiOiAxDQp9DQo=",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"MANIFEST_HISTORY_PASS\",\r\n  \"version_count\": 3,\r\n  \"historical_artifact_file_count\": 8,\r\n  \"latest_version\": \"20261107-v3\",\r\n  \"artifact_count\": 3,\r\n  \"case_count\": 12,\r\n  \"retired_case_count\": 1\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "before": {
+        "versions": [
+          "20261107-v1",
+          "20261107-v2",
+          "20261107-v3"
+        ],
+        "files": {
+          "20261107-v1/manifest.json": "d21e056d23c743abbe2db155b4dfad7f3d607c7844c4253ef8e91b6b3a382bc0",
+          "20261107-v1/testcases/oracle.json": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5",
+          "20261107-v1/testcases/testcases.md": "f43430b6316aa6b4146e81899e54e984b5e3ae5dfc445a39769cba5c3d773031",
+          "20261107-v1/testcases/testcases.xmind": "4be37d06063f430cb276b0ba2030f893ebdeb055355c89c86336dfc281c733b9",
+          "20261107-v2/manifest.json": "4e939dd3c57c4e1caee43cb07f675c1a1de6b47d89e47a26ef215e0320b589b0",
+          "20261107-v2/testcases/testcases.md": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1",
+          "20261107-v2/testcases/testcases.xmind": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76",
+          "20261107-v3/manifest.json": "fb00d8b7d97c9855a12b508e53b8bfe25c0e5d1f7b29a3d78e883f46195197f3",
+          "20261107-v3/testcases/oracle.json": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483",
+          "20261107-v3/testcases/testcases.md": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1",
+          "20261107-v3/testcases/testcases.xmind": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+        }
+      },
+      "after_publish": {
+        "versions": [
+          "20261107-v1",
+          "20261107-v2",
+          "20261107-v3"
+        ],
+        "files": {
+          "20261107-v1/manifest.json": "d21e056d23c743abbe2db155b4dfad7f3d607c7844c4253ef8e91b6b3a382bc0",
+          "20261107-v1/testcases/oracle.json": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5",
+          "20261107-v1/testcases/testcases.md": "f43430b6316aa6b4146e81899e54e984b5e3ae5dfc445a39769cba5c3d773031",
+          "20261107-v1/testcases/testcases.xmind": "4be37d06063f430cb276b0ba2030f893ebdeb055355c89c86336dfc281c733b9",
+          "20261107-v2/manifest.json": "4e939dd3c57c4e1caee43cb07f675c1a1de6b47d89e47a26ef215e0320b589b0",
+          "20261107-v2/testcases/testcases.md": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1",
+          "20261107-v2/testcases/testcases.xmind": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76",
+          "20261107-v3/manifest.json": "fb00d8b7d97c9855a12b508e53b8bfe25c0e5d1f7b29a3d78e883f46195197f3",
+          "20261107-v3/testcases/oracle.json": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483",
+          "20261107-v3/testcases/testcases.md": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1",
+          "20261107-v3/testcases/testcases.xmind": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+        }
+      },
+      "after_validate": {
+        "versions": [
+          "20261107-v1",
+          "20261107-v2",
+          "20261107-v3"
+        ],
+        "files": {
+          "20261107-v1/manifest.json": "d21e056d23c743abbe2db155b4dfad7f3d607c7844c4253ef8e91b6b3a382bc0",
+          "20261107-v1/testcases/oracle.json": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5",
+          "20261107-v1/testcases/testcases.md": "f43430b6316aa6b4146e81899e54e984b5e3ae5dfc445a39769cba5c3d773031",
+          "20261107-v1/testcases/testcases.xmind": "4be37d06063f430cb276b0ba2030f893ebdeb055355c89c86336dfc281c733b9",
+          "20261107-v2/manifest.json": "4e939dd3c57c4e1caee43cb07f675c1a1de6b47d89e47a26ef215e0320b589b0",
+          "20261107-v2/testcases/testcases.md": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1",
+          "20261107-v2/testcases/testcases.xmind": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76",
+          "20261107-v3/manifest.json": "fb00d8b7d97c9855a12b508e53b8bfe25c0e5d1f7b29a3d78e883f46195197f3",
+          "20261107-v3/testcases/oracle.json": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483",
+          "20261107-v3/testcases/testcases.md": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1",
+          "20261107-v3/testcases/testcases.xmind": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+        }
+      },
+      "rejected": true,
+      "reason_matches_expected": true,
+      "version_set_unchanged": true,
+      "historical_sha_unchanged": true,
+      "history_validate_pass": true,
+      "result": "PASS",
+      "temporary_copy_cleaned": true,
+      "publish_result_json": {
+        "result": "FAIL",
+        "error": "本次没有实质内容或交付状态变化，不创建新正式版本"
+      },
+      "reason_text": "本次没有实质内容或交付状态变化，不创建新正式版本"
+    },
+    {
+      "probe_id": "wrong_base",
+      "description": "内容有变更但提供错误基线",
+      "expected_base_version": "20260101-v9",
+      "initial_validate": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "validate",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-tk6tab9m\\requirement-archive"
+        ],
+        "exit_code": 0,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIk1BTklGRVNUX0hJU1RPUllfUEFTUyIsDQogICJ2ZXJzaW9uX2NvdW50IjogMywNCiAgImhpc3RvcmljYWxfYXJ0aWZhY3RfZmlsZV9jb3VudCI6IDgsDQogICJsYXRlc3RfdmVyc2lvbiI6ICIyMDI2MTEwNy12MyIsDQogICJhcnRpZmFjdF9jb3VudCI6IDMsDQogICJjYXNlX2NvdW50IjogMTIsDQogICJyZXRpcmVkX2Nhc2VfY291bnQiOiAxDQp9DQo=",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"MANIFEST_HISTORY_PASS\",\r\n  \"version_count\": 3,\r\n  \"historical_artifact_file_count\": 8,\r\n  \"latest_version\": \"20261107-v3\",\r\n  \"artifact_count\": 3,\r\n  \"case_count\": 12,\r\n  \"retired_case_count\": 1\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "inspect": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "inspect",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-tk6tab9m\\requirement-archive"
+        ],
+        "exit_code": 0,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIk1BTklGRVNUX0JBU0VMSU5FX1JFQURZIiwNCiAgInZlcnNpb25fY291bnQiOiAzLA0KICAibGF0ZXN0X3ZlcnNpb24iOiAiMjAyNjExMDctdjMiLA0KICAibWFuaWZlc3RfcGF0aCI6ICJDOlxcVXNlcnNcXDcxMjQ3MlxcQXBwRGF0YVxcTG9jYWxcXFRlbXBcXHA0LWluY3JlbWVudGFsLXByb2JlLXRrNnRhYjltXFxyZXF1aXJlbWVudC1hcmNoaXZlXFwyMDI2MTEwNy12M1xcbWFuaWZlc3QuanNvbiIsDQogICJyZXF1aXJlbWVudCI6IHsNCiAgICAiaWQiOiAiOTAwMDAxIiwNCiAgICAibmFtZSI6ICJcdTMwMTBcdTZhMjFcdTYyZGZcdTMwMTFcdThiYmZcdTViYTJcdTk4ODRcdTdlYTZcdTRlMmRcdTVmYzMtXHU5ODg0XHU3ZWE2XHU1NDBkXHU1MzU1XHU2NzY1XHU2ZTkwXHU2ODA3XHU3YjdlXHU0ZTBlXHU5MWNkXHU1OTBkXHU5ODg0XHU3ZWE2XHU2ODIxXHU5YThjIg0KICB9LA0KICAiY2FzZV9jb3VudCI6IDEyLA0KICAicmV0aXJlZF9jYXNlX2NvdW50IjogMSwNCiAgIm1hcmtkb3duX3BhdGgiOiAiQzpcXFVzZXJzXFw3MTI0NzJcXEFwcERhdGFcXExvY2FsXFxUZW1wXFxwNC1pbmNyZW1lbnRhbC1wcm9iZS10azZ0YWI5bVxccmVxdWlyZW1lbnQtYXJjaGl2ZVxcMjAyNjExMDctdjNcXHRlc3RjYXNlc1xcdGVzdGNhc2VzLm1kIg0KfQ0K",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"MANIFEST_BASELINE_READY\",\r\n  \"version_count\": 3,\r\n  \"latest_version\": \"20261107-v3\",\r\n  \"manifest_path\": \"<USER_HOME>\\\\AppData\\\\Local\\\\Temp\\\\p4-incremental-probe-tk6tab9m\\\\requirement-archive\\\\20261107-v3\\\\manifest.json\",\r\n  \"requirement\": {\r\n    \"id\": \"900001\",\r\n    \"name\": \"\\u3010\\u6a21\\u62df\\u3011\\u8bbf\\u5ba2\\u9884\\u7ea6\\u4e2d\\u5fc3-\\u9884\\u7ea6\\u540d\\u5355\\u6765\\u6e90\\u6807\\u7b7e\\u4e0e\\u91cd\\u590d\\u9884\\u7ea6\\u6821\\u9a8c\"\r\n  },\r\n  \"case_count\": 12,\r\n  \"retired_case_count\": 1,\r\n  \"markdown_path\": \"<USER_HOME>\\\\AppData\\\\Local\\\\Temp\\\\p4-incremental-probe-tk6tab9m\\\\requirement-archive\\\\20261107-v3\\\\testcases\\\\testcases.md\"\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "xmind_generation": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\xmind.py",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-tk6tab9m\\.qa-work\\testcases.md",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-tk6tab9m\\.qa-work\\testcases.xmind"
+        ],
+        "exit_code": 0,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIlhNSU5EX1JFQURCQUNLX1BBU1MiLA0KICAiZ3JvdXBfY291bnQiOiA0LA0KICAiY2FzZV9jb3VudCI6IDEyLA0KICAic3RlcF9jb3VudCI6IDI2LA0KICAic2VtYW50aWNfcmV2aWV3IjogIk5PVF9BVVRPTUFURUQiLA0KICAiZGVza3RvcF9vcGVuX3ZlcmlmaWVkIjogZmFsc2UNCn0NCg==",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"XMIND_READBACK_PASS\",\r\n  \"group_count\": 4,\r\n  \"case_count\": 12,\r\n  \"step_count\": 26,\r\n  \"semantic_review\": \"NOT_AUTOMATED\",\r\n  \"desktop_open_verified\": false\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "publish_attempt": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "publish",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-tk6tab9m\\requirement-archive",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-tk6tab9m\\.qa-work\\publish-spec.json"
+        ],
+        "exit_code": 1,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIkZBSUwiLA0KICAiZXJyb3IiOiAiXHU1M2QxXHU1ZTAzXHU1N2ZhXHU3ZWJmXHU1ZGYyXHU1M2Q4XHU1MzE2XHVmZjFhXHU2NzJjXHU2YjIxXHU3NTFmXHU2MjEwXHU5ODg0XHU2NzFmXHU1N2ZhXHU3ZWJmXHU0ZTNhIDIwMjYwMTAxLXY5XHVmZjBjXHU1ZjUzXHU1MjRkXHU2NzAwXHU2NWIwXHU3MjQ4XHU2NzJjXHU0ZTNhIDIwMjYxMTA3LXYzXHVmZjFiXHU4YmY3XHU5MWNkXHU2NWIwIGluc3BlY3QgXHU1ZTc2XHU1N2ZhXHU0ZThlXHU2NzAwXHU2NWIwXHU1N2ZhXHU3ZWJmXHU5MWNkXHU1ZWZhXHU1M2QxXHU1ZTAzXHU4ZjkzXHU1MTY1Ig0KfQ0K",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"FAIL\",\r\n  \"error\": \"\\u53d1\\u5e03\\u57fa\\u7ebf\\u5df2\\u53d8\\u5316\\uff1a\\u672c\\u6b21\\u751f\\u6210\\u9884\\u671f\\u57fa\\u7ebf\\u4e3a 20260101-v9\\uff0c\\u5f53\\u524d\\u6700\\u65b0\\u7248\\u672c\\u4e3a 20261107-v3\\uff1b\\u8bf7\\u91cd\\u65b0 inspect \\u5e76\\u57fa\\u4e8e\\u6700\\u65b0\\u57fa\\u7ebf\\u91cd\\u5efa\\u53d1\\u5e03\\u8f93\\u5165\"\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "post_validate": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "validate",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-tk6tab9m\\requirement-archive"
+        ],
+        "exit_code": 0,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIk1BTklGRVNUX0hJU1RPUllfUEFTUyIsDQogICJ2ZXJzaW9uX2NvdW50IjogMywNCiAgImhpc3RvcmljYWxfYXJ0aWZhY3RfZmlsZV9jb3VudCI6IDgsDQogICJsYXRlc3RfdmVyc2lvbiI6ICIyMDI2MTEwNy12MyIsDQogICJhcnRpZmFjdF9jb3VudCI6IDMsDQogICJjYXNlX2NvdW50IjogMTIsDQogICJyZXRpcmVkX2Nhc2VfY291bnQiOiAxDQp9DQo=",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"MANIFEST_HISTORY_PASS\",\r\n  \"version_count\": 3,\r\n  \"historical_artifact_file_count\": 8,\r\n  \"latest_version\": \"20261107-v3\",\r\n  \"artifact_count\": 3,\r\n  \"case_count\": 12,\r\n  \"retired_case_count\": 1\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "before": {
+        "versions": [
+          "20261107-v1",
+          "20261107-v2",
+          "20261107-v3"
+        ],
+        "files": {
+          "20261107-v1/manifest.json": "d21e056d23c743abbe2db155b4dfad7f3d607c7844c4253ef8e91b6b3a382bc0",
+          "20261107-v1/testcases/oracle.json": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5",
+          "20261107-v1/testcases/testcases.md": "f43430b6316aa6b4146e81899e54e984b5e3ae5dfc445a39769cba5c3d773031",
+          "20261107-v1/testcases/testcases.xmind": "4be37d06063f430cb276b0ba2030f893ebdeb055355c89c86336dfc281c733b9",
+          "20261107-v2/manifest.json": "4e939dd3c57c4e1caee43cb07f675c1a1de6b47d89e47a26ef215e0320b589b0",
+          "20261107-v2/testcases/testcases.md": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1",
+          "20261107-v2/testcases/testcases.xmind": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76",
+          "20261107-v3/manifest.json": "fb00d8b7d97c9855a12b508e53b8bfe25c0e5d1f7b29a3d78e883f46195197f3",
+          "20261107-v3/testcases/oracle.json": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483",
+          "20261107-v3/testcases/testcases.md": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1",
+          "20261107-v3/testcases/testcases.xmind": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+        }
+      },
+      "after_publish": {
+        "versions": [
+          "20261107-v1",
+          "20261107-v2",
+          "20261107-v3"
+        ],
+        "files": {
+          "20261107-v1/manifest.json": "d21e056d23c743abbe2db155b4dfad7f3d607c7844c4253ef8e91b6b3a382bc0",
+          "20261107-v1/testcases/oracle.json": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5",
+          "20261107-v1/testcases/testcases.md": "f43430b6316aa6b4146e81899e54e984b5e3ae5dfc445a39769cba5c3d773031",
+          "20261107-v1/testcases/testcases.xmind": "4be37d06063f430cb276b0ba2030f893ebdeb055355c89c86336dfc281c733b9",
+          "20261107-v2/manifest.json": "4e939dd3c57c4e1caee43cb07f675c1a1de6b47d89e47a26ef215e0320b589b0",
+          "20261107-v2/testcases/testcases.md": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1",
+          "20261107-v2/testcases/testcases.xmind": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76",
+          "20261107-v3/manifest.json": "fb00d8b7d97c9855a12b508e53b8bfe25c0e5d1f7b29a3d78e883f46195197f3",
+          "20261107-v3/testcases/oracle.json": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483",
+          "20261107-v3/testcases/testcases.md": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1",
+          "20261107-v3/testcases/testcases.xmind": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+        }
+      },
+      "after_validate": {
+        "versions": [
+          "20261107-v1",
+          "20261107-v2",
+          "20261107-v3"
+        ],
+        "files": {
+          "20261107-v1/manifest.json": "d21e056d23c743abbe2db155b4dfad7f3d607c7844c4253ef8e91b6b3a382bc0",
+          "20261107-v1/testcases/oracle.json": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5",
+          "20261107-v1/testcases/testcases.md": "f43430b6316aa6b4146e81899e54e984b5e3ae5dfc445a39769cba5c3d773031",
+          "20261107-v1/testcases/testcases.xmind": "4be37d06063f430cb276b0ba2030f893ebdeb055355c89c86336dfc281c733b9",
+          "20261107-v2/manifest.json": "4e939dd3c57c4e1caee43cb07f675c1a1de6b47d89e47a26ef215e0320b589b0",
+          "20261107-v2/testcases/testcases.md": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1",
+          "20261107-v2/testcases/testcases.xmind": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76",
+          "20261107-v3/manifest.json": "fb00d8b7d97c9855a12b508e53b8bfe25c0e5d1f7b29a3d78e883f46195197f3",
+          "20261107-v3/testcases/oracle.json": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483",
+          "20261107-v3/testcases/testcases.md": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1",
+          "20261107-v3/testcases/testcases.xmind": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+        }
+      },
+      "rejected": true,
+      "reason_matches_expected": true,
+      "version_set_unchanged": true,
+      "historical_sha_unchanged": true,
+      "history_validate_pass": true,
+      "result": "PASS",
+      "temporary_copy_cleaned": true,
+      "publish_result_json": {
+        "result": "FAIL",
+        "error": "发布基线已变化：本次生成预期基线为 20260101-v9，当前最新版本为 20261107-v3；请重新 inspect 并基于最新基线重建发布输入"
+      },
+      "reason_text": "发布基线已变化：本次生成预期基线为 20260101-v9，当前最新版本为 20261107-v3；请重新 inspect 并基于最新基线重建发布输入"
+    },
+    {
+      "probe_id": "missing_base",
+      "description": "内容有变更但缺少 expected_base_version",
+      "expected_base_version": "<MISSING>",
+      "initial_validate": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "validate",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-k7jxmjcm\\requirement-archive"
+        ],
+        "exit_code": 0,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIk1BTklGRVNUX0hJU1RPUllfUEFTUyIsDQogICJ2ZXJzaW9uX2NvdW50IjogMywNCiAgImhpc3RvcmljYWxfYXJ0aWZhY3RfZmlsZV9jb3VudCI6IDgsDQogICJsYXRlc3RfdmVyc2lvbiI6ICIyMDI2MTEwNy12MyIsDQogICJhcnRpZmFjdF9jb3VudCI6IDMsDQogICJjYXNlX2NvdW50IjogMTIsDQogICJyZXRpcmVkX2Nhc2VfY291bnQiOiAxDQp9DQo=",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"MANIFEST_HISTORY_PASS\",\r\n  \"version_count\": 3,\r\n  \"historical_artifact_file_count\": 8,\r\n  \"latest_version\": \"20261107-v3\",\r\n  \"artifact_count\": 3,\r\n  \"case_count\": 12,\r\n  \"retired_case_count\": 1\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "inspect": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "inspect",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-k7jxmjcm\\requirement-archive"
+        ],
+        "exit_code": 0,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIk1BTklGRVNUX0JBU0VMSU5FX1JFQURZIiwNCiAgInZlcnNpb25fY291bnQiOiAzLA0KICAibGF0ZXN0X3ZlcnNpb24iOiAiMjAyNjExMDctdjMiLA0KICAibWFuaWZlc3RfcGF0aCI6ICJDOlxcVXNlcnNcXDcxMjQ3MlxcQXBwRGF0YVxcTG9jYWxcXFRlbXBcXHA0LWluY3JlbWVudGFsLXByb2JlLWs3anhtamNtXFxyZXF1aXJlbWVudC1hcmNoaXZlXFwyMDI2MTEwNy12M1xcbWFuaWZlc3QuanNvbiIsDQogICJyZXF1aXJlbWVudCI6IHsNCiAgICAiaWQiOiAiOTAwMDAxIiwNCiAgICAibmFtZSI6ICJcdTMwMTBcdTZhMjFcdTYyZGZcdTMwMTFcdThiYmZcdTViYTJcdTk4ODRcdTdlYTZcdTRlMmRcdTVmYzMtXHU5ODg0XHU3ZWE2XHU1NDBkXHU1MzU1XHU2NzY1XHU2ZTkwXHU2ODA3XHU3YjdlXHU0ZTBlXHU5MWNkXHU1OTBkXHU5ODg0XHU3ZWE2XHU2ODIxXHU5YThjIg0KICB9LA0KICAiY2FzZV9jb3VudCI6IDEyLA0KICAicmV0aXJlZF9jYXNlX2NvdW50IjogMSwNCiAgIm1hcmtkb3duX3BhdGgiOiAiQzpcXFVzZXJzXFw3MTI0NzJcXEFwcERhdGFcXExvY2FsXFxUZW1wXFxwNC1pbmNyZW1lbnRhbC1wcm9iZS1rN2p4bWpjbVxccmVxdWlyZW1lbnQtYXJjaGl2ZVxcMjAyNjExMDctdjNcXHRlc3RjYXNlc1xcdGVzdGNhc2VzLm1kIg0KfQ0K",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"MANIFEST_BASELINE_READY\",\r\n  \"version_count\": 3,\r\n  \"latest_version\": \"20261107-v3\",\r\n  \"manifest_path\": \"<USER_HOME>\\\\AppData\\\\Local\\\\Temp\\\\p4-incremental-probe-k7jxmjcm\\\\requirement-archive\\\\20261107-v3\\\\manifest.json\",\r\n  \"requirement\": {\r\n    \"id\": \"900001\",\r\n    \"name\": \"\\u3010\\u6a21\\u62df\\u3011\\u8bbf\\u5ba2\\u9884\\u7ea6\\u4e2d\\u5fc3-\\u9884\\u7ea6\\u540d\\u5355\\u6765\\u6e90\\u6807\\u7b7e\\u4e0e\\u91cd\\u590d\\u9884\\u7ea6\\u6821\\u9a8c\"\r\n  },\r\n  \"case_count\": 12,\r\n  \"retired_case_count\": 1,\r\n  \"markdown_path\": \"<USER_HOME>\\\\AppData\\\\Local\\\\Temp\\\\p4-incremental-probe-k7jxmjcm\\\\requirement-archive\\\\20261107-v3\\\\testcases\\\\testcases.md\"\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "xmind_generation": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\xmind.py",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-k7jxmjcm\\.qa-work\\testcases.md",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-k7jxmjcm\\.qa-work\\testcases.xmind"
+        ],
+        "exit_code": 0,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIlhNSU5EX1JFQURCQUNLX1BBU1MiLA0KICAiZ3JvdXBfY291bnQiOiA0LA0KICAiY2FzZV9jb3VudCI6IDEyLA0KICAic3RlcF9jb3VudCI6IDI2LA0KICAic2VtYW50aWNfcmV2aWV3IjogIk5PVF9BVVRPTUFURUQiLA0KICAiZGVza3RvcF9vcGVuX3ZlcmlmaWVkIjogZmFsc2UNCn0NCg==",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"XMIND_READBACK_PASS\",\r\n  \"group_count\": 4,\r\n  \"case_count\": 12,\r\n  \"step_count\": 26,\r\n  \"semantic_review\": \"NOT_AUTOMATED\",\r\n  \"desktop_open_verified\": false\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "publish_attempt": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "publish",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-k7jxmjcm\\requirement-archive",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-k7jxmjcm\\.qa-work\\publish-spec.json"
+        ],
+        "exit_code": 1,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIkZBSUwiLA0KICAiZXJyb3IiOiAicHVibGlzaCBzcGVjIFx1NWZjNVx1OTg3Ylx1NjYzZVx1NWYwZlx1NThmMFx1NjYwZSBleHBlY3RlZF9iYXNlX3ZlcnNpb25cdWZmMWJcdTk5OTZcdTZiMjFcdTcyNDhcdTY3MmNcdTU4NmIgbnVsbFx1ZmYwY1x1NTg5ZVx1OTFjZlx1NzI0OFx1NjcyY1x1NTg2Ylx1NTE5OSBpbnNwZWN0IFx1OGZkNFx1NTZkZVx1NzY4NCBsYXRlc3RfdmVyc2lvbiINCn0NCg==",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"FAIL\",\r\n  \"error\": \"publish spec \\u5fc5\\u987b\\u663e\\u5f0f\\u58f0\\u660e expected_base_version\\uff1b\\u9996\\u6b21\\u7248\\u672c\\u586b null\\uff0c\\u589e\\u91cf\\u7248\\u672c\\u586b\\u5199 inspect \\u8fd4\\u56de\\u7684 latest_version\"\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "post_validate": {
+        "argv": [
+          "<PYTHON_ROOT>\\python.exe",
+          "-B",
+          "<PROJECT_ROOT>\\skills\\testcase-design\\tools\\manifest.py",
+          "validate",
+          "<USER_HOME>\\AppData\\Local\\Temp\\p4-incremental-probe-k7jxmjcm\\requirement-archive"
+        ],
+        "exit_code": 0,
+        "stdout_b64": "ew0KICAicmVzdWx0IjogIk1BTklGRVNUX0hJU1RPUllfUEFTUyIsDQogICJ2ZXJzaW9uX2NvdW50IjogMywNCiAgImhpc3RvcmljYWxfYXJ0aWZhY3RfZmlsZV9jb3VudCI6IDgsDQogICJsYXRlc3RfdmVyc2lvbiI6ICIyMDI2MTEwNy12MyIsDQogICJhcnRpZmFjdF9jb3VudCI6IDMsDQogICJjYXNlX2NvdW50IjogMTIsDQogICJyZXRpcmVkX2Nhc2VfY291bnQiOiAxDQp9DQo=",
+        "stderr_b64": "",
+        "stdout_utf8": "{\r\n  \"result\": \"MANIFEST_HISTORY_PASS\",\r\n  \"version_count\": 3,\r\n  \"historical_artifact_file_count\": 8,\r\n  \"latest_version\": \"20261107-v3\",\r\n  \"artifact_count\": 3,\r\n  \"case_count\": 12,\r\n  \"retired_case_count\": 1\r\n}\r\n",
+        "stderr_utf8": ""
+      },
+      "before": {
+        "versions": [
+          "20261107-v1",
+          "20261107-v2",
+          "20261107-v3"
+        ],
+        "files": {
+          "20261107-v1/manifest.json": "d21e056d23c743abbe2db155b4dfad7f3d607c7844c4253ef8e91b6b3a382bc0",
+          "20261107-v1/testcases/oracle.json": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5",
+          "20261107-v1/testcases/testcases.md": "f43430b6316aa6b4146e81899e54e984b5e3ae5dfc445a39769cba5c3d773031",
+          "20261107-v1/testcases/testcases.xmind": "4be37d06063f430cb276b0ba2030f893ebdeb055355c89c86336dfc281c733b9",
+          "20261107-v2/manifest.json": "4e939dd3c57c4e1caee43cb07f675c1a1de6b47d89e47a26ef215e0320b589b0",
+          "20261107-v2/testcases/testcases.md": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1",
+          "20261107-v2/testcases/testcases.xmind": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76",
+          "20261107-v3/manifest.json": "fb00d8b7d97c9855a12b508e53b8bfe25c0e5d1f7b29a3d78e883f46195197f3",
+          "20261107-v3/testcases/oracle.json": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483",
+          "20261107-v3/testcases/testcases.md": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1",
+          "20261107-v3/testcases/testcases.xmind": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+        }
+      },
+      "after_publish": {
+        "versions": [
+          "20261107-v1",
+          "20261107-v2",
+          "20261107-v3"
+        ],
+        "files": {
+          "20261107-v1/manifest.json": "d21e056d23c743abbe2db155b4dfad7f3d607c7844c4253ef8e91b6b3a382bc0",
+          "20261107-v1/testcases/oracle.json": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5",
+          "20261107-v1/testcases/testcases.md": "f43430b6316aa6b4146e81899e54e984b5e3ae5dfc445a39769cba5c3d773031",
+          "20261107-v1/testcases/testcases.xmind": "4be37d06063f430cb276b0ba2030f893ebdeb055355c89c86336dfc281c733b9",
+          "20261107-v2/manifest.json": "4e939dd3c57c4e1caee43cb07f675c1a1de6b47d89e47a26ef215e0320b589b0",
+          "20261107-v2/testcases/testcases.md": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1",
+          "20261107-v2/testcases/testcases.xmind": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76",
+          "20261107-v3/manifest.json": "fb00d8b7d97c9855a12b508e53b8bfe25c0e5d1f7b29a3d78e883f46195197f3",
+          "20261107-v3/testcases/oracle.json": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483",
+          "20261107-v3/testcases/testcases.md": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1",
+          "20261107-v3/testcases/testcases.xmind": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+        }
+      },
+      "after_validate": {
+        "versions": [
+          "20261107-v1",
+          "20261107-v2",
+          "20261107-v3"
+        ],
+        "files": {
+          "20261107-v1/manifest.json": "d21e056d23c743abbe2db155b4dfad7f3d607c7844c4253ef8e91b6b3a382bc0",
+          "20261107-v1/testcases/oracle.json": "5a45508b0dd1eac86ede71e7e893f8d5b9f3657316fceb4f5794d370520c14a5",
+          "20261107-v1/testcases/testcases.md": "f43430b6316aa6b4146e81899e54e984b5e3ae5dfc445a39769cba5c3d773031",
+          "20261107-v1/testcases/testcases.xmind": "4be37d06063f430cb276b0ba2030f893ebdeb055355c89c86336dfc281c733b9",
+          "20261107-v2/manifest.json": "4e939dd3c57c4e1caee43cb07f675c1a1de6b47d89e47a26ef215e0320b589b0",
+          "20261107-v2/testcases/testcases.md": "240acf729e693f8c82aa7001ec9bd9483f319fea079556eba8b090bb867be8b1",
+          "20261107-v2/testcases/testcases.xmind": "fdd8c6291543af29c93e8ed9037ffc524fc5d92170575e23860a1c668dfc5d76",
+          "20261107-v3/manifest.json": "fb00d8b7d97c9855a12b508e53b8bfe25c0e5d1f7b29a3d78e883f46195197f3",
+          "20261107-v3/testcases/oracle.json": "1d51fe0a8d55bdcf64a239d171d0d1390b38cc4a2d4d2a50fd43a9a862820483",
+          "20261107-v3/testcases/testcases.md": "e16a9994271ee3590d7813421e74ee70699120da4c06c99cc8612f85b915a7b1",
+          "20261107-v3/testcases/testcases.xmind": "7eacc1905dc76a1d3b9ca5707dfade8dd6ece0e3e5916c938294e85481de5ac1"
+        }
+      },
+      "rejected": true,
+      "reason_matches_expected": true,
+      "version_set_unchanged": true,
+      "historical_sha_unchanged": true,
+      "history_validate_pass": true,
+      "result": "PASS",
+      "temporary_copy_cleaned": true,
+      "publish_result_json": {
+        "result": "FAIL",
+        "error": "publish spec 必须显式声明 expected_base_version；首次版本填 null，增量版本填写 inspect 返回的 latest_version"
+      },
+      "reason_text": "publish spec 必须显式声明 expected_base_version；首次版本填 null，增量版本填写 inspect 返回的 latest_version"
+    }
+  ],
+  "overall": "PASS"
+}

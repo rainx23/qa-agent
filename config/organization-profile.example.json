@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "git_baselines": {
+    "frontend": {
+      "production_ref": "",
+      "shared_integration_ref": "",
+      "submission_ref": "from_task",
+      "compare_mode": "feature_vs_production"
+    },
+    "backend": {
+      "production_ref": "",
+      "submission_ref": "",
+      "compare_mode": "submission_vs_production",
+      "allow_user_confirmed_historical_base": true
+    },
+    "etl": {
+      "production_ref": "",
+      "submission_ref": "from_task"
+    }
+  },
+  "config_evidence": {
+    "environment": "",
+    "menu_config_tool": "",
+    "dictionary_tool": ""
+  },
+  "sql": {
+    "default_dialect": "presto",
+    "view_prefix_hints": []
+  },
+  "integrations": {
+    "requirements_mcp": "",
+    "defects_mcp": "",
+    "ace_cli": "",
+    "api_testcase_mcp": "",
+    "lineage_mcp": ""
+  },
+  "bug_defaults": {
+    "pri": null,
+    "severity": null,
+    "env": ""
+  }
+}

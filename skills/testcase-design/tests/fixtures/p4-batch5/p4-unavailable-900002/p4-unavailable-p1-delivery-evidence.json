@@ -1,0 +1,274 @@
+{
+  "scope": "P4 KNOWLEDGE_UNAVAILABLE -> P1 complete formal delivery in isolated synthetic fixture",
+  "p4_probe": {
+    "file": "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\knowledge\\modules\\sim-visit-center\\business-rules.json",
+    "sha256": "b09a13650706fe7ff81743d3243df8132c5b2f19e1cb535ffee5514b5ae016cc",
+    "result": {
+      "result": "KNOWLEDGE_UNAVAILABLE",
+      "error_type": "JSONDecodeError",
+      "line": 1,
+      "column": 86,
+      "message": "Expecting property name enclosed in double quotes: line 1 column 86 (char 85)"
+    },
+    "p1_continued": true
+  },
+  "requirement": {
+    "file": "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\requirement-900002.md",
+    "sha256": "2dbb7abc76e4c34a7b5de3fc7d63b9a62acb22021c99db07e4479ae5a41738d8"
+  },
+  "oracle": {
+    "file": "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\archive\\output\\900002-【模拟】访客预约中心-预约来源标签与筛选\\20261107-v1\\testcases\\oracle.json",
+    "sha256": "02ff59b26e0ecd06cb4580fe98fa15eed09f23e3bccd0ec636f23095accb15ea",
+    "source_ids": [
+      "S1"
+    ],
+    "obligation_count": 8,
+    "write_order_ns": 1794053123205663700
+  },
+  "markdown": {
+    "file": "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\archive\\output\\900002-【模拟】访客预约中心-预约来源标签与筛选\\20261107-v1\\testcases\\testcases.md",
+    "sha256": "00f582977294ee712bc186ead1ff19d2019469dcd4be9b3bad166561a8d4c1a7",
+    "case_count": 8,
+    "write_order_ns": 1794053123207665000
+  },
+  "xmind": {
+    "file": "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\archive\\output\\900002-【模拟】访客预约中心-预约来源标签与筛选\\20261107-v1\\testcases\\testcases.xmind",
+    "sha256": "b7fb3b8ca755dd36c99c82e1ab1b8345000306aff2849e0d76dc1db86d88897f",
+    "generation": {
+      "result": "XMIND_READBACK_PASS",
+      "group_count": 2,
+      "case_count": 8,
+      "step_count": 8,
+      "semantic_review": "NOT_AUTOMATED",
+      "desktop_open_verified": false
+    },
+    "staging_verify": {
+      "result": "XMIND_READBACK_PASS",
+      "group_count": 2,
+      "case_count": 8,
+      "step_count": 8,
+      "semantic_review": "NOT_AUTOMATED",
+      "desktop_open_verified": false
+    },
+    "published_verify": {
+      "result": "XMIND_READBACK_PASS",
+      "group_count": 2,
+      "case_count": 8,
+      "step_count": 8,
+      "semantic_review": "NOT_AUTOMATED",
+      "desktop_open_verified": false
+    }
+  },
+  "publish": {
+    "result": {
+      "result": "MANIFEST_PUBLISH_PASS",
+      "version_id": "20261107-v1",
+      "version_path": "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\archive\\output\\900002-【模拟】访客预约中心-预约来源标签与筛选\\20261107-v1",
+      "delivery_status": "complete",
+      "artifact_count": 3,
+      "case_count": 8,
+      "retired_case_count": 0,
+      "validation": {
+        "markdown_oracle": "STRUCTURE_PASS",
+        "xmind_readback": "XMIND_READBACK_PASS",
+        "semantic_review": "NOT_AUTOMATED"
+      }
+    },
+    "validate": {
+      "result": "MANIFEST_HISTORY_PASS",
+      "version_count": 1,
+      "historical_artifact_file_count": 3,
+      "latest_version": "20261107-v1",
+      "artifact_count": 3,
+      "case_count": 8,
+      "retired_case_count": 0
+    },
+    "version_manifest_sha256": "e1ca16080914189a139bee8fd08fedb6f6dae769bcfd34e1a7c10bcb6b43ca1d"
+  },
+  "pair_validation": {
+    "requirement": {
+      "id": "900002",
+      "name": "【模拟】访客预约中心-预约来源标签与筛选"
+    },
+    "group_count": 2,
+    "case_count": 8,
+    "step_count": 8,
+    "oracle_sources": 1,
+    "oracle_obligations": 8,
+    "open_questions": 0,
+    "semantic_review": "NOT_AUTOMATED",
+    "result": "STRUCTURE_PASS"
+  },
+  "commands": [
+    {
+      "argv": [
+        "<PYTHON_ROOT>\\python.exe",
+        "-B",
+        "skills/testcase-design/tools/artifacts.py",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\staging\\testcases.md",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\staging\\oracle.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\r\n  \"requirement\": {\r\n    \"id\": \"900002\",\r\n    \"name\": \"\\u3010\\u6a21\\u62df\\u3011\\u8bbf\\u5ba2\\u9884\\u7ea6\\u4e2d\\u5fc3-\\u9884\\u7ea6\\u6765\\u6e90\\u6807\\u7b7e\\u4e0e\\u7b5b\\u9009\"\r\n  },\r\n  \"group_count\": 2,\r\n  \"case_count\": 8,\r\n  \"step_count\": 8,\r\n  \"oracle_sources\": 1,\r\n  \"oracle_obligations\": 8,\r\n  \"open_questions\": 0,\r\n  \"semantic_review\": \"NOT_AUTOMATED\",\r\n  \"result\": \"STRUCTURE_PASS\"\r\n}\r\n",
+      "stderr": "",
+      "json": {
+        "requirement": {
+          "id": "900002",
+          "name": "【模拟】访客预约中心-预约来源标签与筛选"
+        },
+        "group_count": 2,
+        "case_count": 8,
+        "step_count": 8,
+        "oracle_sources": 1,
+        "oracle_obligations": 8,
+        "open_questions": 0,
+        "semantic_review": "NOT_AUTOMATED",
+        "result": "STRUCTURE_PASS"
+      }
+    },
+    {
+      "argv": [
+        "<PYTHON_ROOT>\\python.exe",
+        "-B",
+        "skills/testcase-design/tools/xmind.py",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\staging\\testcases.md",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\staging\\testcases.xmind"
+      ],
+      "exit_code": 0,
+      "stdout": "{\r\n  \"result\": \"XMIND_READBACK_PASS\",\r\n  \"group_count\": 2,\r\n  \"case_count\": 8,\r\n  \"step_count\": 8,\r\n  \"semantic_review\": \"NOT_AUTOMATED\",\r\n  \"desktop_open_verified\": false\r\n}\r\n",
+      "stderr": "",
+      "json": {
+        "result": "XMIND_READBACK_PASS",
+        "group_count": 2,
+        "case_count": 8,
+        "step_count": 8,
+        "semantic_review": "NOT_AUTOMATED",
+        "desktop_open_verified": false
+      }
+    },
+    {
+      "argv": [
+        "<PYTHON_ROOT>\\python.exe",
+        "-B",
+        "skills/testcase-design/tools/xmind.py",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\staging\\testcases.md",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\staging\\testcases.xmind",
+        "--verify"
+      ],
+      "exit_code": 0,
+      "stdout": "{\r\n  \"result\": \"XMIND_READBACK_PASS\",\r\n  \"group_count\": 2,\r\n  \"case_count\": 8,\r\n  \"step_count\": 8,\r\n  \"semantic_review\": \"NOT_AUTOMATED\",\r\n  \"desktop_open_verified\": false\r\n}\r\n",
+      "stderr": "",
+      "json": {
+        "result": "XMIND_READBACK_PASS",
+        "group_count": 2,
+        "case_count": 8,
+        "step_count": 8,
+        "semantic_review": "NOT_AUTOMATED",
+        "desktop_open_verified": false
+      }
+    },
+    {
+      "argv": [
+        "<PYTHON_ROOT>\\python.exe",
+        "-B",
+        "skills/testcase-design/tools/manifest.py",
+        "publish",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\archive\\output\\900002-【模拟】访客预约中心-预约来源标签与筛选",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\staging\\publish-spec.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\r\n  \"result\": \"MANIFEST_PUBLISH_PASS\",\r\n  \"version_id\": \"20261107-v1\",\r\n  \"version_path\": \"skills\\\\testcase-design\\\\tests\\\\fixtures\\\\p4-batch5\\\\p4-unavailable-900002\\\\archive\\\\output\\\\900002-\\u3010\\u6a21\\u62df\\u3011\\u8bbf\\u5ba2\\u9884\\u7ea6\\u4e2d\\u5fc3-\\u9884\\u7ea6\\u6765\\u6e90\\u6807\\u7b7e\\u4e0e\\u7b5b\\u9009\\\\20261107-v1\",\r\n  \"delivery_status\": \"complete\",\r\n  \"artifact_count\": 3,\r\n  \"case_count\": 8,\r\n  \"retired_case_count\": 0,\r\n  \"validation\": {\r\n    \"markdown_oracle\": \"STRUCTURE_PASS\",\r\n    \"xmind_readback\": \"XMIND_READBACK_PASS\",\r\n    \"semantic_review\": \"NOT_AUTOMATED\"\r\n  }\r\n}\r\n",
+      "stderr": "",
+      "json": {
+        "result": "MANIFEST_PUBLISH_PASS",
+        "version_id": "20261107-v1",
+        "version_path": "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\archive\\output\\900002-【模拟】访客预约中心-预约来源标签与筛选\\20261107-v1",
+        "delivery_status": "complete",
+        "artifact_count": 3,
+        "case_count": 8,
+        "retired_case_count": 0,
+        "validation": {
+          "markdown_oracle": "STRUCTURE_PASS",
+          "xmind_readback": "XMIND_READBACK_PASS",
+          "semantic_review": "NOT_AUTOMATED"
+        }
+      }
+    },
+    {
+      "argv": [
+        "<PYTHON_ROOT>\\python.exe",
+        "-B",
+        "skills/testcase-design/tools/manifest.py",
+        "validate",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\archive\\output\\900002-【模拟】访客预约中心-预约来源标签与筛选"
+      ],
+      "exit_code": 0,
+      "stdout": "{\r\n  \"result\": \"MANIFEST_HISTORY_PASS\",\r\n  \"version_count\": 1,\r\n  \"historical_artifact_file_count\": 3,\r\n  \"latest_version\": \"20261107-v1\",\r\n  \"artifact_count\": 3,\r\n  \"case_count\": 8,\r\n  \"retired_case_count\": 0\r\n}\r\n",
+      "stderr": "",
+      "json": {
+        "result": "MANIFEST_HISTORY_PASS",
+        "version_count": 1,
+        "historical_artifact_file_count": 3,
+        "latest_version": "20261107-v1",
+        "artifact_count": 3,
+        "case_count": 8,
+        "retired_case_count": 0
+      }
+    },
+    {
+      "argv": [
+        "<PYTHON_ROOT>\\python.exe",
+        "-B",
+        "skills/testcase-design/tools/xmind.py",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\archive\\output\\900002-【模拟】访客预约中心-预约来源标签与筛选\\20261107-v1\\testcases\\testcases.md",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\archive\\output\\900002-【模拟】访客预约中心-预约来源标签与筛选\\20261107-v1\\testcases\\testcases.xmind",
+        "--verify"
+      ],
+      "exit_code": 0,
+      "stdout": "{\r\n  \"result\": \"XMIND_READBACK_PASS\",\r\n  \"group_count\": 2,\r\n  \"case_count\": 8,\r\n  \"step_count\": 8,\r\n  \"semantic_review\": \"NOT_AUTOMATED\",\r\n  \"desktop_open_verified\": false\r\n}\r\n",
+      "stderr": "",
+      "json": {
+        "result": "XMIND_READBACK_PASS",
+        "group_count": 2,
+        "case_count": 8,
+        "step_count": 8,
+        "semantic_review": "NOT_AUTOMATED",
+        "desktop_open_verified": false
+      }
+    },
+    {
+      "argv": [
+        "<PYTHON_ROOT>\\python.exe",
+        "-B",
+        "skills/testcase-design/tools/artifacts.py",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\archive\\output\\900002-【模拟】访客预约中心-预约来源标签与筛选\\20261107-v1\\testcases\\testcases.md",
+        "skills\\testcase-design\\tests\\fixtures\\p4-batch5\\p4-unavailable-900002\\archive\\output\\900002-【模拟】访客预约中心-预约来源标签与筛选\\20261107-v1\\testcases\\oracle.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\r\n  \"requirement\": {\r\n    \"id\": \"900002\",\r\n    \"name\": \"\\u3010\\u6a21\\u62df\\u3011\\u8bbf\\u5ba2\\u9884\\u7ea6\\u4e2d\\u5fc3-\\u9884\\u7ea6\\u6765\\u6e90\\u6807\\u7b7e\\u4e0e\\u7b5b\\u9009\"\r\n  },\r\n  \"group_count\": 2,\r\n  \"case_count\": 8,\r\n  \"step_count\": 8,\r\n  \"oracle_sources\": 1,\r\n  \"oracle_obligations\": 8,\r\n  \"open_questions\": 0,\r\n  \"semantic_review\": \"NOT_AUTOMATED\",\r\n  \"result\": \"STRUCTURE_PASS\"\r\n}\r\n",
+      "stderr": "",
+      "json": {
+        "requirement": {
+          "id": "900002",
+          "name": "【模拟】访客预约中心-预约来源标签与筛选"
+        },
+        "group_count": 2,
+        "case_count": 8,
+        "step_count": 8,
+        "oracle_sources": 1,
+        "oracle_obligations": 8,
+        "open_questions": 0,
+        "semantic_review": "NOT_AUTOMATED",
+        "result": "STRUCTURE_PASS"
+      }
+    }
+  ],
+  "boundaries": {
+    "synthetic_only": true,
+    "real_business_validation": "NOT_RUN",
+    "browser_api_database": "NOT_RUN",
+    "xmind_desktop": "NOT_RUN",
+    "platform_import": "NOT_RUN",
+    "push": "NOT_RUN"
+  }
+}

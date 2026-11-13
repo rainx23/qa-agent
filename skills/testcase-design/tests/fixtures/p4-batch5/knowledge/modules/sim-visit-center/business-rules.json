@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "module_id": "sim-visit-center",
+  "category": "business-rules",
+  "simulation_notice": "虚构知识，仅用于 P4 第五批隔离验收，不代表任何真实业务规则。",
+  "rules": [
+    {
+      "id": "VC-BR-001",
+      "title": "预约名单默认查询范围",
+      "rule": "进入「预约名单」页面且未手工选择查询条件时，默认展示今日起未来 7 天内、预约状态不为「已取消」的预约记录；历史已取消预约不出现在默认结果中。",
+      "knowledge_status": "formal_reusable",
+      "business_confirmation": "user_confirmed",
+      "scope": {
+        "page_object_id": "sim-visit-list",
+        "applies_to": "预约名单默认视图，不含任何手工查询条件"
+      },
+      "evidence": [
+        {
+          "source": "SIM-PRIOR-REQ-898877",
+          "description": "虚构历史需求 898877：预约名单默认视图范围，用户已确认",
+          "confirmed_at": "2026-09-15"
+        },
+        {
+          "repository": "sim-visit-center",
+          "commit_sha": "SIMULATED_SHA_NOT_A_REAL_COMMIT",
+          "path": "pages/visit-list/index.vue",
+          "lines": "1-40",
+          "note": "模拟定位线索，未核验真实仓库"
+        }
+      ]
+    },
+    {
+      "id": "VC-BR-002",
+      "title": "小程序来源可能额外展示预约渠道明细列",
+      "rule": "来源标签为「小程序」时，预约名单列表额外展示「预约渠道明细」列。",
+      "knowledge_status": "candidate_pending_verification",
+      "business_confirmation": "not_confirmed",
+      "evidence": [
+        {
+          "source": "SIM-AI-INFERENCE",
+          "description": "从虚构页面草稿推断，未经用户或需求确认"
+        }
+      ],
+      "required_validation": "需产品确认该列是否存在及其适用范围"
+    },
+    {
+      "id": "VC-BR-003",
+      "title": "重复预约拦截条件（历史口径，与本次需求冲突）",
+      "rule": "重复预约仅按手机号是否已存在进行拦截，不区分到访日期与被访人。",
+      "knowledge_status": "review_required",
+      "review_reason": "虚构需求 900001 明确拦截条件为「手机号 + 到访日期 + 被访人」三者相同；新旧证据冲突，旧规则保留历史来源，不得作为本次预期依据。",
+      "business_confirmation": "user_confirmed",
+      "evidence": [
+        {
+          "source": "SIM-PRIOR-REQ-880001",
+          "description": "虚构历史需求 880001 旧口径：仅按手机号拦截",
+          "recorded_at": "2026-08-02"
+        },
+        {
+          "source": "SIM-REQ-900001",
+          "description": "本次虚构需求新口径：手机号 + 到访日期 + 被访人三者相同才拦截",
+          "conflict": true
+        }
+      ]
+    }
+  ]
+}

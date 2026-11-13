@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "module_id": "sim-visit-center",
+  "category": "quality-experience",
+  "simulation_notice": "虚构知识，仅用于 P4 第五批隔离验收，不代表任何真实缺陷或历史事实。",
+  "findings": [
+    {
+      "id": "VC-Q-001",
+      "title": "历史导出列顺序与页面列顺序不一致",
+      "severity": "medium",
+      "knowledge_status": "candidate_pending_verification",
+      "evidence": [
+        "虚构历史 BUG SIM-BUG-8801：新增列后导出文件缺少该列"
+      ],
+      "risk": "新增列后导出可能遗漏或列顺序不一致；仅为历史经验，不代表本次实现存在缺陷，也不构成运行验证结论。",
+      "required_validation": "本次需求已明确导出要求，按需求设计用例核对，不以历史 BUG 直接判定缺陷"
+    }
+  ]
+}

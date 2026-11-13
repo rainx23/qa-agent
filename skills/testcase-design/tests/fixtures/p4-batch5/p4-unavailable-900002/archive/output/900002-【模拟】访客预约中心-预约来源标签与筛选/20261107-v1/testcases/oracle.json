@@ -1,0 +1,89 @@
+{
+  "schema_version": "1",
+  "requirement": {
+    "id": "900002",
+    "name": "【模拟】访客预约中心-预约来源标签与筛选"
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "description": "虚构需求 900002 正文（预约来源展示、筛选选项、过滤组合与空状态）",
+      "locator": "skills/testcase-design/tests/fixtures/p4-batch5/p4-unavailable-900002/requirement-900002.md"
+    }
+  ],
+  "obligations": [
+    {
+      "id": "O1",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "预约名单新增预约来源列，紧跟预约时间列之后，其他原有列的相对顺序不变",
+      "expected_outcome": "预约来源列位于预约时间列右侧，其他原有列顺序保持不变",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O2",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "WEB、WECHAT、PHONE 分别映射为官网、公众号、电话回访",
+      "expected_outcome": "三种已知 sourceCode 显示为需求明确指定的中文来源名称",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O3",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "其他未识别 sourceCode 或空 sourceCode 显示未知来源",
+      "expected_outcome": "未识别值和空值均展示未知来源",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O4",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "预约来源筛选选项为全部、官网、公众号、电话回访，不增加未知来源选项",
+      "expected_outcome": "筛选选项与需求列出的四项一致，不出现未知来源选项",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O5",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "选择某个已知来源时只展示该来源预约记录",
+      "expected_outcome": "官网、公众号、电话回访三个筛选值分别只返回 sourceCode 对应记录",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O6",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "选择全部时不增加来源过滤，所有来源记录均可展示",
+      "expected_outcome": "全部结果包含已知来源记录及未知来源记录",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O7",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "预约来源、预约日期、预约状态条件按 AND 关系组合",
+      "expected_outcome": "结果同时满足来源、日期和状态条件，任一条件不满足的记录被排除",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "O8",
+      "source_ids": [
+        "S1"
+      ],
+      "rule": "查询无匹配记录时展示暂无数据",
+      "expected_outcome": "列表显示暂无数据空状态",
+      "certainty": "confirmed"
+    }
+  ],
+  "open_questions": []
+}
