@@ -34,7 +34,7 @@ P1 testcase-design 既有路由规则保持如下：
 - 用户只提供需求编号且当前对话未提供正文时，按需使用当前执行环境可用的需求来源 MCP 读取详情/正文；正文充分时不重复读取。MCP 工具名和参数以当前运行时 Schema 为准。
 - 连续追问沿用当前任务范围；只有用户明确改变目标才切换。
 - **用例执行结果标记（暂缓）**：当前不启用自动标记路由。后续如用户授权恢复，仅使用已连接并核实 Schema 的目标用例管理 MCP；不可用时报告缺口，不使用 UI 自动化兜底。
-- **P2 提测数据验证与 P3**：普通需求分析/P1 和非提测 P2 不默认生成 SQL。开发提测影响分析（`submission-impact.md`）由 AI 结合本次实际代码变更、需求业务义务和影响链路，识别必要的独立真实数据验证目标；不机械覆盖页面全部指标，也不按 CHK/MV/Case 数量生成 SQL。每个目标由 P3 完成 F（真实样本）与 V（独立预期）两项内部职责，默认整合为一条 `SQL-01`、一次执行；只有真实执行端/权限、数据来源、粒度、过滤、Oracle 或结果结构冲突导致无法安全合并时才拆分。SQL 正文生成/写入前，P2 必须完整读取 `skills/sql-design/SKILL.md`、`skills/sql-design/references/sql-design-guidelines.md` 并遵循 `skills/code-impact-analysis/references/p3-sql-delegation.md`；任一文件读取失败或不完整时停止 SQL 生成/写入，报告 `P3_RULES_NOT_LOADED`，不得由 P2 自行手写 SQL 兜底，非 SQL 分析继续。纯 UI 样式/布局/导航等没有真实数据断言的场景不生成 SQL。SQL 正文及交付证据写入绑定当前 P2 基线的 `.qa-work/<需求编号>-<需求名称>/submission-impact/verification-details.md`；首次聊天不展示 SQL 正文，逐条验证时返回对应目标。SQL 只读，P2/P3 不连接或执行数据库，由用户在获准环境手动执行；其他 P2 工作流不因本规则自动扩展。
+- **P2 提测数据验证与 P3（仅 `submission-impact.md`）**：普通需求分析/P1 与非提测 P2 不默认生成 SQL。开发提测先核对需求、源码及实际影响链路，识别必要的独立真实数据验证目标，不机械覆盖页面全部指标或按 CHK/MV 数量生成 SQL；纯 UI/布局/导航无真实数据断言则不生成。**是否进入 P3 设计、受阻处理、F/V、默认 SQL-01、CHK/MV 映射、工作稿与首次聊天隐藏 SQL，统一遵循 `skills/code-impact-analysis/references/p3-sql-delegation.md`**。只在实际准备生成/补充/修改或写入 SQL 正文前，才强制完整加载当前 P3 `SKILL.md` 与 `sql-design-guidelines.md`；加载失败报告 `P3_RULES_NOT_LOADED` 并停止 SQL 正文，不阻断其他分析，P2 不得自行写 SQL。设计 SQL 不要求连接数据库或具备执行权限；SQL 只读，由用户在获准环境手工执行，其他 P2 工作流不因此扩展。
 - 开发提测影响分析属于独立触发的代码相关工作流；用户提供“需求编号 + 提测点”后才启动，不能在普通需求分析或用例设计时擅自拉取 Git。
 ### P2 `code-impact-analysis`（新增统一入口）
 
