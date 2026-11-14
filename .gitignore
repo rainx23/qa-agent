@@ -38,6 +38,8 @@
 !.env.example
 __pycache__/
 *.py[cod]
+# Transient publish coordination locks (including test fixture runs).
+.qa-publish-*.lock
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/

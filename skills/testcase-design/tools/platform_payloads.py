@@ -11,8 +11,10 @@ import json
 from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
-from artifacts import ArtifactError, parse_markdown
-
+if __package__:
+    from .artifacts import ArtifactError, parse_markdown
+else:
+    from artifacts import ArtifactError, parse_markdown
 
 class PlatformPayloadError(ValueError):
     """The canonical testcase source cannot be mapped safely to a platform."""

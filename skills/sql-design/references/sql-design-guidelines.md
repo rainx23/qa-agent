@@ -175,7 +175,7 @@
 4. **仅一次正式发布与验签**：把 spec 置于 `.qa-work/`，运行 `python -B skills/testcase-design/tools/manifest.py publish <需求目录> <publish-spec.json>`。仅退出码 0 且 `MANIFEST_PUBLISH_PASS` 才表示确有新版本发布。随后运行 `python -B skills/testcase-design/tools/manifest.py validate <需求目录>`，仅退出码 0 且 `MANIFEST_HISTORY_PASS` 为完整历史验签通过。相同内容被拒绝“无实质变更”是正常防重，应返回无需新版本，不反复尝试。
 5. **增量继承和故障保护**：SQL 角色保持稳定；同角色内容变更才生成新文件，未列入本次 `artifacts` 的角色及现有 P1/P2 文件沿历史 `source_version` 和 SHA 引用。新增角色不是删除旧角色；退役 SQL 角色仅在用户明确确认且有依据时按 P1 协议定向处理。旧基线、历史 SHA 损坏、非法路径、并发更新等应让发布器拒绝；若发布回执不确定，检查最新 Manifest 和目录后再决定操作，绝不盲目重发。发布成功后的 `validate` 失败必须保留现场，不能用再次 `publish` 掩盖。
 6. **版本与身份隔离**：`schema_version = "1"` 不变；SQL-only 首次交付允许无 P1 用例，已存在 P1 用例时必须继承全部现有/退役 Case ID、Revision、原 Markdown/XMind/Oracle 的完整正式快照，不调整 P1 覆盖结论。`inspect` 返回 `markdown_path: null` 可意味着该需求还没有正式用例，并非自动错误。
-7. **运行时和验收边界**：实际发布入口 `skills/testcase-design/tools/manifest.py` 当前为 Python 3.11 编译文件恢复桩，**没有可维护完整源码**。隔离测试 PASS 只能证明现有运行时发布器可工作；解释器不兼容、`.pyc` 不存在或损坏时标 `PUBLISH_UNAVAILABLE`，不绕过 Manifest，不从旧工程引入路径依赖。第二批 SQL-only 归档已在独立工程验收范围通过；这一发布器维护限制仍未解决，不得宣称源码已可维护。数据库 SQL 实际执行、SR/Presto 实库解析与独立 Oracle 数据正确性仍为 `NOT_RUN`。
+7. **运行时和验收边界**：正式发布入口 `skills/testcase-design/tools/manifest.py` 当前已有可维护的 Python 源码，并非编译文件恢复桩；可维护源码的存在不代表运行环境、历史数据或跨版本发布自然通过。解释器/依赖不兼容、发布器缺失或实际执行失败时，应保留真实错误并按适用契约标 `PUBLISH_UNAVAILABLE` 等受阻状态；不得绕过 Manifest、回退旧工程或自行改写历史。SQL-only 隔离工程验收仅证明对应发布/验签场景，数据库 SQL 实际执行、SR/Presto 实库解析及独立 Oracle 数据正确性仍为 `NOT_RUN`。
 8. **收尾**：清理本次 `.qa-work/` 临时文件之前确认发布及验签回执，不能删除正式历史、已存在的互斥锁或其他任务草稿。模拟设计与隔离工程集成仅在对应范围验收 PASS；任何真实需求的实库数据结果、跨 Agent 实际执行和整体业务验收均须单独验证，不得据工程测试推断业务 SQL 正确。
 
 ## 交付前自审与状态

@@ -17,7 +17,7 @@
 |---|---|
 | `requirement-900001.md` | 虚构需求正文（Oracle 来源 S1） |
 | `knowledge/modules/sim-visit-center/` | 虚构 P4 知识模块（未被写入，仅只读消费） |
-| `archive/output/900001-【模拟】…/` | 隔离的需求归档根目录（含 `.qa-publish-*.lock` 发布锁） |
+| `archive/output/900001-【模拟】…/` | 隔离的需求归档根目录（`.qa-publish-*.lock` 为运行时生成并留存的协调锁，不纳入 Git） |
 | `archive/output/900001-【模拟】…/20261107-v1/` | 首次正式交付：Markdown、XMind、Oracle |
 | `archive/output/900001-【模拟】…/20261107-v2/` | 增量正式交付：Markdown、XMind（Oracle 继承 v1） |
 | `archive/output/900001-【模拟】…/20261107-v3/` | O11 语义整改：Markdown、Oracle、XMind（保留 v1/v2 历史） |

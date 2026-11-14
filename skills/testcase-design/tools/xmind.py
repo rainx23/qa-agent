@@ -15,8 +15,10 @@ import zlib
 from uuid import uuid4
 from zipfile import BadZipFile, ZIP_DEFLATED, ZipFile
 
-from artifacts import ArtifactError, _require, parse_markdown
-
+if __package__:
+    from .artifacts import ArtifactError, _require, parse_markdown
+else:
+    from artifacts import ArtifactError, _require, parse_markdown
 
 # XMind native number markers (1..5) represent P0..P4 in that order.
 PRIORITY_MARKERS = {f"P{number}": f"priority-{number + 1}" for number in range(5)}
