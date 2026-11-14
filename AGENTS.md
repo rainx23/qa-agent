@@ -16,7 +16,7 @@
 - `skills/code-impact-analysis/SKILL.md`：P2 代码影响分析统一入口，负责场景意图识别和工作流路由。
 - `skills/sql-design/SKILL.md`：P3 独立 SQL 设计入口；按需加载 `skills/sql-design/references/sql-design-guidelines.md`。
 - `skills/knowledge-management/SKILL.md`：P4 统一入口，按任务只读检索或执行用户已授权的知识增量维护；不是 P1/P2/P3 前置步骤。
-- `skills/api-autotesting/SKILL.md`：独立接口自动化入口；用户明确要求新增接口自动化、存量接口首次初始化、增量更新或回归保护时加载。由 Skill 识别接口生命周期及一期/二期目标；P1/P2/P3/P4 仅作按需辅助输入，不设为强制前置。
+- `skills/api-autotesting/SKILL.md`：**P5 独立接口自动化入口**；用户明确要求新增接口自动化、存量接口首次初始化、增量更新或回归保护时加载。由 Skill 识别接口生命周期及一期/二期目标；P1/P2/P3/P4 仅作按需辅助输入，不设为强制前置。
 - `skills/knowledge-management/references/knowledge-update.md`：P4 第二批知识发现与安全增量维护规则，只有明确知识写入意图时由 P4 入口加载。
 - `skills/knowledge-management/references/knowledge-freshness.md`：P4 第三批源码 SHA/DEV 配置与冲突按需复核；仅相关证据确需核对时加载，不设每次必查。
 - `skills/code-impact-analysis/references/report-format.md`：P2 统一分析报告、业务核对矩阵、证据索引及人工核对规范。
@@ -61,7 +61,7 @@ P1 testcase-design 既有路由规则保持如下：
 - **P4 版本/配置适用性按需复核**：仅当前任务需要证明已存知识对目标源码 SHA、DEV 通用查询配置仍有效，或存在新旧证据冲突时，按入口加载 `references/knowledge-freshness.md`；复用主任务可信 SHA，SHA 不同不自动判定业务逻辑已变化。P2 按当前任务与可选 `config/organization-profile.json` 已确认的生产、特性和集成引用执行基线核对；历史配置不得冒充当前环境实际值。
 - P4 不作为 P1/P2/P3 前置步骤；主 Skill 自动沉淀联动、后台/定时新鲜度扫描及跨 Skill 端到端验收仍属后续批次或不建设。**第三批仅提供受影响知识的按需版本/配置复核**，不默认重验整个模块。知识缺失或不可用时主任务继续；已有正式业务知识不因本次 Skill 建设自动更新。
 
-### 接口自动化
+### P5｜接口自动化
 - 用户明确要求接口自动化，或明确要求对新增接口、存量接口首次初始化、已有接口增量更新/回归保护时，读取 `skills/api-autotesting/SKILL.md`；由该 Skill 按自然语言和当前上下文识别接口生命周期，不要求固定命令。
 - 先识别本次目标属于一期源码驱动的隐藏场景发现与持续回归，还是二期真实业务数据准确性验证。P1/P2/P3/P4 及历史产物均为按需辅助输入，不设强制前置；接口自动化必须独立核对当前前后端源码。
 - 一期不默认生成数据 SQL、执行 INSERT 或 ETL；只有目标确实需要真实业务数据断言时才按 Skill 转入二期 A/B 路径，并遵守已确认的 UAT 数据准备和安全边界。
