@@ -3,8 +3,7 @@ name: api-autotesting
 description: 以 AI 为决策主体，基于前后端源码发现接口隐藏场景、建立和维护覆盖基线并保护历史回归；按需识别真实业务数据准确性验证。
 ---
 
-# API Autotesting（接口自动化）
-
+# P5｜API Autotesting（接口自动化）
 ## 能力定位与边界
 
 - 本 Skill 是独立、按需触发的接口自动化能力，负责接口身份识别、源码分析、场景与断言设计、覆盖审查、增量影响判断、ZeroRunner 协作及结果分析。

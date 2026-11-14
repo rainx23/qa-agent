@@ -40,6 +40,22 @@
 - 报告引用无法映射到 Case 或版本时，保留报告 ID 并显式标记 `UNKNOWN`；这表示证据范围已如实披露，不得为了消除 UNKNOWN 而编造版本，也不得把缺少版本信息的历史记录删除。
 
 
+## 项目索引与跨文件证据一致性
+
+- **权威关系**：每接口 JSON 是该接口场景、Case/Step 映射、需求变更和覆盖结论的权威记录；index.json 只是面向项目检索的轻量摘要投影，不得独立维护出另一套事实。需求完整历史留在接口 JSON 的 requirement_updates[] 与需求正式产物中。
+- **当前与历史 Case**：platform.case_id 指向唯一当前主 Case；存在 case_ids 时仅记录当前有效入口；historical_case_ids 单独保留历史身份，当前 Case 不得同时列入历史集合。索引投影必须与接口记录一致，不因历史 Case 数量多而把它们重新列为当前入口。
+- **报告版本必须来自报告证据**：latest_formal_report_id 表示最近已取得的正式报告，不自动表示当前 Case 版本已执行；last_formal_report_case_version 必须取该报告实际执行时的 Case 版本。current_version_formal_report_id 只有在报告 Case ID 和 Case 版本均与当前平台回读一致时才可填写。当前版本未执行时保留 NOT_RUN_AFTER_UPDATE 和空的当前版本报告 ID，历史成功报告仍可作为历史基线展示。
+- **禁止用当前版本反推历史版本**：报告证据未提供 Case 版本时标记 UNKNOWN，不得把当前 platform.case_version 复制到旧报告上。报告 ID、Case ID、Case 版本和 report_type 必须来自同一份可追溯报告证据；正式 Run 与 Debug 分开，Debug 不得进入正式报告字段。
+- **场景结果映射**：优先用稳定 scenario_key 关联本地场景与报告逐 Step 结果，再核对结果 ID/状态；平台 Step ID 变化时保留旧来源身份并更新当前映射，不得仅按 Step 序号或名称猜测关联，也不得把报告整体 PASS 扩散为所有场景 PASS。
+- **逐条声明核对**：当平台权威记录明确包含 `current_version_formal_status/current_version_formal_report_id` 时，索引即使两字段同时为空也应判定投影不一致；旧记录没有这些字段则按兼容规则处理。每个场景的 `formal_result` 和 `latest_formal_result` 是两个独立声明，必须分别与报告证据核对；不得按报告 ID/结果 ID 跨场景去重跳过声明，只能复用已经读取的报告证据。
+- **需求增量投影**：requirement_updates[] 按时间追加并保留历史；index.latest_incremental_requirement 只投影最新一条记录的编号、版本、状态和必要路径/报告引用。ADD/UPDATE/KEEP/RETIRE/REVIEW 场景键必须能在接口场景记录中找到；无需求增量时投影为空。历史格式不完整时保留原始记录并标记待迁移，不伪造来源。
+- **计数口径**：场景记录数、当前平台 Step 数、启用/禁用数、当前 Case 数和历史 Case 数分别统计。平台 Step 数必须来自当前 Case 的最新只读回读；不能用场景数组长度或历史 Step 数代替。
+- **更新顺序与回读**：维护时先读取接口 JSON、项目索引和本次涉及的报告/平台证据；完成接口级记录后，再从已校验的接口记录生成索引摘要。写入后重新读取两个 JSON，核对 Case/版本/报告/需求投影和场景引用；任一步不一致都停止后续归档，不盲目重试或宣称同步成功。
+- **确定性校验边界**：Python 可以检查 JSON 语法、必需身份字段、唯一键、引用存在性、计数和报告版本一致性；场景价值、业务覆盖是否充分、Oracle 是否可信仍由 AI 根据源码和业务证据判断。只读检查工具不得自动修正索引或场景数据。
+- **校验器的缺证与历史结果行为**：报告 Case ID、执行时 Case 版本或 report_type 缺失时必须输出 UNKNOWN/WARNING，不得静默通过；不得使用 Case 当前版本字段（如 current_version）推断报告执行版本。当前索引投影缺少权威平台快照已有的字段值时必须报错；启用场景的 current_case_id 必须等于当前主 Case。所有保留的 formal_result/latest_formal_result 均需按 report_id 回查报告证据，优先 scenario_key，缺少时可用 result_id 做精确匹配；无法读取逐 Step 结果时标记 WARNING。平台计数只与同一份当前平台回读中可比的计数核对，不用场景记录数冒充平台 Step 数。非法记录必须产生 finding 并继续处理其他记录。
+- 本地索引更新后执行只读检查：`python -B skills/api-autotesting/tools/validate_api_index.py`；非默认目录可通过 `--root` 指定。工具只报告跨文件身份/版本/映射问题，不会自动修正任何 JSON；ERROR 需先核对证据并修复，WARNING 应保留未知边界，不得直接忽略。
+- **兼容历史结构**：接口 JSON 可能保留不同阶段的字段布局；缺少某个新字段不等于数据无效。按实际存在的结构核验，必要时标记 LEGACY/UNKNOWN；未经单独迁移计划和证据确认，不批量重写历史接口 JSON 或统一改字段名。
+
 ## 执行与交付检查
 
 交付检查只核查本次任务实际涉及的部分，不要求每次任务都提供全部类型的证据：
