@@ -6,6 +6,12 @@
 
 ## 未发布（Unreleased）
 
+### Gemini GitHub 全仓静态复审：P2 归档与跨 Agent 文档一致性
+
+- Bug Lifecycle 新归档路径统一为需求根目录 `analysis/bug-lifecycle/BUG-<BugID>/`，不再依赖 P1 用例基线；无需求编号的独立 BUG 任务仍使用已有任务根目录，历史归档不迁移。
+- P2 三处旧编号式引用改为公开 Skill 文档及章节引用；P1/P4 模拟夹具 README 使用中性业务模块占位名称。
+- 本地 P2 单元测试 21/21 PASS，三类文档契约检查和 `git diff --check` PASS。Gemini 基于指定 GitHub Commit 的全仓审查为 PASS_WITH_FINDINGS、工程运行 NOT_RUN；本轮修复完成后 Codex 独立验收待执行，真实业务/平台结果未验证。
+
 ### Skills 确认式联动
 
 - P1 需求分析/用例报告可主动提出带来源与去重信息的 P4 知识候选；只有用户明确选择才增量维护，已有 P1 产物及授权边界不变。

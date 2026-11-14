@@ -4,7 +4,7 @@
 
 ## 1. 目的
 
-验证以下事项（不修改 `output/` 正式归档、不修改 `knowledge/modules/global-cost/` 六类正式 JSON）：
+验证以下事项（不修改 `output/` 正式归档、不修改 `knowledge/modules/<业务模块>/` 下的六类正式 JSON）：
 
 1. P1 `testcase-design` 在需求分析阶段按需只读检索 P4 知识，并真实复用 `formal_reusable` 业务规则作为补充预期。
 2. P4 的候选（`candidate_pending_verification`）、冲突（`review_required`）、未知（`unknown`）不进入已确认用例预期。

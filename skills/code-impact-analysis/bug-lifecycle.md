@@ -133,7 +133,7 @@
 ## 交付与归档
 
 每个 Bug 使用独立归档目录，避免与同一需求的提测分析报告、创建回执或其他 Bug 报告冲突：
-`<P1基线版本>/analysis/bug-lifecycle/BUG-<BugID>/`
+`output/【<模块>】/<需求编号>-<需求名称>/analysis/bug-lifecycle/BUG-<BugID>/`（有需求编号时，独立于 `analysis/<YYYYMMDD-vN>/` 和 P1 正式用例版本）
 
 每个 Bug 目录按实际内容创建：
 - `impact-analysis.md`：该 Bug 的修复影响分析、直接/间接影响、回归范围、AI 验证结果及证据；每次同一 Bug 后续回归只更新本目录内文件。
@@ -157,4 +157,4 @@
 
 Manifest 使用独立 `category=bug-lifecycle`，并按 Bug ID 使用唯一 role（`BUG-<BugID>-impact-analysis`、`BUG-<BugID>-manual-verification`、`BUG-<BugID>-close-receipt`）。登记前必须以当前 Manifest 工具实际验证 category、role 和多 Bug 并存兼容性。**当前运行模块实测拒绝 `bug-lifecycle` category（`artifacts[].category 不受支持`），因此当前只保存隔离文件，不登记 Manifest；报告 `MANIFEST_REGISTRATION_NOT_SUPPORTED`。**不得改用 `test-impact-analysis` 身份绕过限制，也不得修改 P1 既有 artifact、版本、用例快照、交付状态或其他字段。未来只有 Manifest 明确支持后才恢复登记。
 
-有 P1 正式基线时使用该基线版本下的上述独立目录；无 P1 基线时沿用现有 P2 独立 BUG 任务目录规则，在该任务目录下建立 `analysis/bug-lifecycle/BUG-<BugID>/`，不得虚构需求编号或版本。
+有明确需求编号时使用上述需求根目录下的 Bug Lifecycle 独立目录，不要求存在 P1 正式用例基线；无需求编号时沿用现有 P2 独立 BUG 任务根目录 `output/impact-analysis/BUG-<主题>-<YYYYMMDD>/`，在其下建立 `analysis/bug-lifecycle/BUG-<BugID>/`，根因报告原有 `vN/` 版本规则不变。历史归档不迁移、不覆盖，不得虚构需求编号或版本。
