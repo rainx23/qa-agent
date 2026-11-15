@@ -270,7 +270,7 @@ Draft ID 只是 Agent 草稿标识，不是禅道 Bug ID。每条 Bug 独立编�
 1. `createBug` 必须明确返回成功及 Bug ID；随后只用 `queryBugs(queryType=BUG_ID, queryData=<BugID>)` 做创建回读，不传 `status`（该过滤已实测不可靠）。核对返回 Bug ID、标题和关联需求均与本次最终预览一致。未完成回读不得生成成功回执。
 2. 从需求归档根目录执行 `python -B skills/testcase-design/tools/manifest.py inspect <requirement_root>`，使用返回的 `latest_version`；不得自行创建 P2 版本或覆盖历史版本。
 3. 将最终提交预览、createBug 成功回执、指派人、提交时间、需求依据、缺陷证据和代码定位组装为临时 receipt JSON。`creation_status` 必须为 `success`；内容必须来自最终预览和实际证据，不能补造原始正文。
-4. 执行 `python -B skills/testcase-design/tools/manifest.py register-bug-receipt <requirement_root> <latest_version> <receipt_json>`。该现有命令负责生成 `analysis/bug-submissions/BUG-<BugID>.md` 并登记唯一 Manifest 记录（`category=test-impact-analysis`、`role=bug-submission-<BugID>`）；禁止手工覆盖既有回执或直接改写其他 P2/P1 身份。
+4. 执行 `python -B skills/testcase-design/tools/manifest.py register-bug-receipt <requirement_root> <latest_version> <receipt_json>`。该现有命令负责生成 `analysis/<登记时的latest_version>/bug-submissions/BUG-<BugID>.md` 并登记唯一 Manifest 记录（`category=test-impact-analysis`、`role=bug-submission-<BugID>`）；禁止手工覆盖既有回执或直接改写其他 P2/P1 身份。
 5. 注册命令后必须执行只读确定性核验：
    `python -B skills/code-impact-analysis/tools/verify_bug_archive.py submission <requirement_root> <BugID>`
    核验器会读取 `manifest.py inspect` 返回的当前最新版本 Manifest，确认其中恰好存在一条 `bug-submission-<BugID>` role、category 正确、登记路径对应本 Bug 回执、文件存在且 SHA-256 与 Manifest 一致，并要求 `manifest.py validate <requirement_root>` 返回 `MANIFEST_HISTORY_PASS`。**回执文件可能位于早期版本目录，但由当前最新 Manifest 延续引用；不得错误要求回执路径必须位于 latest_version 目录。**

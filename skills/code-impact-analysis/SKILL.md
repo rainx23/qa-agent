@@ -129,7 +129,7 @@ P2 独立于 P1 和 P4：
   - 正常提测分析读取最新有效 P2 报告/人工清单并延续未决 MV；独立分析在报告完成前不得读取历史 P2 结论，执行来源、模型（可确认时）、分析模式、时间、P1 基线和代码 SHA 写入报告。只读读取最新 P2 时从最新整体 Manifest 的有效 artifact 定位并验 SHA，不触发新分析或新版本。
   - P2-only 发布必须保留最新整体 Manifest 的顶层 delivery_status、P1 用例身份/Revision/内容指纹/退役信息、计数/验证字段及所有未变化 P1/P3 artifact；case_snapshot.status 轮次状态由现有 publisher 计算（如 added → unchanged），不要求整份快照逐字段相同。P2 报告自身的 PARTIAL/COMPLETE 不得覆盖 P1 的 delivery_status。人工待办全部处置时可在新版本退役简要 `manual-verification` role，但若 `verification-details.md` 含最终 SQL/实际结果/验证结论，必须保留其当前有效 role，不得随待办清空一并退役。
   - 独立盲分析不继承上一轮 `manual-verification` 或 `verification-details` 内容：本轮有人工事项时生成本轮新清单和详细记录并替换当前有效 role；本轮没有人工事项时，仅依据最新 Manifest 中 role 的存在性，在 publish spec 使用 retire_artifacts 退役不再适用的旧 role，不读取旧文件正文。历史文件仍保留。
-  - Bug Submission 在创建回读成功后，使用现有 manifest.py register-bug-receipt 生成 analysis/bug-submissions/BUG-<BugID>.md 并登记唯一 bug-submission-<BugID> role。Bug Lifecycle 继续按 Bug ID 使用 analysis/bug-lifecycle/BUG-<BugID>/ 独立目录；当前 Manifest 验证器不支持 bug-lifecycle category，因此只保存 Lifecycle 文件并报告 MANIFEST_REGISTRATION_NOT_SUPPORTED，不得复用 test-impact-analysis 身份。无需求编号的 BUG/CODE 任务沿用各自既有独立任务目录和版本序列。
+  - Bug Submission 在创建回读成功后，使用现有 manifest.py register-bug-receipt 生成 analysis/<登记时的latest_version>/bug-submissions/BUG-<BugID>.md 并登记唯一 bug-submission-<BugID> role。Bug Lifecycle 继续按 Bug ID 使用 analysis/bug-lifecycle/BUG-<BugID>/ 独立目录；当前 Manifest 验证器不支持 bug-lifecycle category，因此只保存 Lifecycle 文件并报告 MANIFEST_REGISTRATION_NOT_SUPPORTED，不得复用 test-impact-analysis 身份。无需求编号的 BUG/CODE 任务沿用各自既有独立任务目录和版本序列。
 
 ## 安全与能力边界
 

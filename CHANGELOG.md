@@ -6,6 +6,12 @@
 
 ## 未发布（Unreleased）
 
+### Gemini 深审第一批：P1 夹具脱敏与 P2 回执路径修正
+
+- 对 P1 测试夹具中 3 处仍保留原始内容的 `stdout_b64` 重新编码，与已脱敏的 `stdout_utf8` 保持一致；新增回归测试覆盖 28 组 Base64/UTF-8 对应字段。
+- 修正 P2 Bug Submission 两处归档说明，明确回执路径为 `analysis/<登记时的latest_version>/bug-submissions/BUG-<BugID>.md`，不改变 `manifest.py`、历史版本继承或平台写入逻辑。
+- 基于 `c7a51e0` 的 Codex 独立工程验收 `OVERALL: PASS`：P1 169/169、P2 21/21、`git diff --check` PASS；核对确认 JSON 仅变更 3 处 Base64、28 组对应字段一致、P2 路径符合 `manifest.py` 和核验器契约。新增测试覆盖下限仅为大于 0 组，属非阻断建议；真实平台业务验证未执行。历史公开提交的脱敏风险须单独评估，本次不改写 Git 历史。
+
 ### Gemini GitHub 全仓静态复审：P2 归档与跨 Agent 文档一致性
 
 - Bug Lifecycle 新归档路径统一为需求根目录 `analysis/bug-lifecycle/BUG-<BugID>/`，不再依赖 P1 用例基线；无需求编号的独立 BUG 任务仍使用已有任务根目录，历史归档不迁移。
