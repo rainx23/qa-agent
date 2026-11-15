@@ -6,6 +6,16 @@
 
 ## 未发布（Unreleased）
 
+### Gemini 深审第二批：P5 索引校验边界修复
+
+- 修复 P5 校验器布尔值与字符串/数字 ID 的误判，并检查当前及历史 Case ID 列表重复记录。
+- 对相同 Report ID 下已知身份/执行版本或逐场景结果冲突提示 WARNING；内容相同或互补的报告证据不误报。
+- 按启用场景的不同当前 Step 映射提示与平台启用 Step 数的差异，不将场景数直接当作 Step 数，避免合并场景误报。
+- Codex 首轮验收发现互补报告场景结果分散时误报 `SCENARIO_RESULT_MAPPING_MISSING`（NEED_FIX），已改为同一 `report_id` 的兼容证据联合核对场景结果。
+- Codex 第二轮复验发现缺少身份字段的证据可能桥接冲突版本（NEED_FIX）；已改为先检查所有已知 Case/执行版本/报告类型，存在冲突时不允许未知身份参与跨范围补齐。当前/最新报告证据优先选择明确匹配的执行身份，避免文件名顺序改变结论。
+- Codex 第三轮复验发现当最新报告同时属于当前版本时，最新报告选择未使用已知 Case ID，造成不同文件顺序下多余的 `LATEST_REPORT_CASE_NOT_RECOGNIZED` 告警（NEED_FIX）；已最小修复并增加三份证据全部 6 种排列的回归测试，历史最新报告与当前报告不同 ID 时不强制当前 Case。
+- **Codex 第四轮独立工程验收 OVERALL: PASS**（基线 `ca1d257`）：三份报告证据全部 6 种文件排列均仅产生 `REPORT_EVIDENCE_CONFLICT` WARNING，无额外 Case 告警或 ERROR；此前互补报告、未知身份桥接、Debug/Case 冲突等反例独立复验通过。累计新增 22 项针对性回归测试；P5 全量单测 77 项（76 PASS、1 SKIP）、`git diff --check` PASS，已无必须整改项。真实平台执行及大规模性能尚未验证。
+
 ### Gemini 深审第一批：P1 夹具脱敏与 P2 回执路径修正
 
 - 对 P1 测试夹具中 3 处仍保留原始内容的 `stdout_b64` 重新编码，与已脱敏的 `stdout_utf8` 保持一致；新增回归测试覆盖 28 组 Base64/UTF-8 对应字段。

@@ -25,7 +25,7 @@ def _load_json(path: Path, findings: list[dict[str, str]]) -> Any:
 def _same_id(left: Any, right: Any) -> bool:
     if left is None or right is None:
         return left is right
-    if isinstance(left, (dict, list)) or isinstance(right, (dict, list)):
+    if isinstance(left, (dict, list, bool)) or isinstance(right, (dict, list, bool)):
         return False
     return str(left) == str(right)
 
@@ -33,7 +33,7 @@ def _same_id(left: Any, right: Any) -> bool:
 def _same_id_list(left: Any, right: Any) -> bool:
     if not isinstance(left, list) or not isinstance(right, list):
         return False
-    if any(isinstance(value, (dict, list)) or value is None for value in left + right):
+    if any(isinstance(value, (dict, list, bool)) or value is None for value in left + right):
         return False
     return sorted(str(value) for value in left) == sorted(str(value) for value in right)
 
@@ -82,19 +82,31 @@ def _report_results(evidence: dict[str, Any]) -> list[dict[str, Any]] | None:
 
 
 def _report_evidence(
-    report_id: Any, evidence_by_id: dict[str, list[tuple[Path, dict[str, Any]]]]
+    report_id: Any, evidence_by_id: dict[str, list[tuple[Path, dict[str, Any]]]],
+    *, case_id: Any = None, case_version: Any = None,
 ) -> tuple[Path, dict[str, Any]] | None:
+    if isinstance(report_id, bool):
+        return None
     matches = evidence_by_id.get(str(report_id), [])
     if not matches:
         return None
-    formal_matches = [item for item in matches if _report_field(item[1], "report_type") == 10]
-    if formal_matches:
-        # Prefer the evidence record that actually carries per-Step results.
-        for item in formal_matches:
-            if _report_results(item[1]) is not None:
-                return item
-        return formal_matches[0]
-    return matches[0]
+    formal_matches = [item for item in matches if _same_id(_report_field(item[1], "report_type"), 10)]
+    candidates = formal_matches or matches
+
+    def scope_rank(item: tuple[Path, dict[str, Any]]) -> tuple[int, int, int, bool]:
+        evidence = item[1]
+        expected = {"report_type": 10, "case_id": case_id, "case_version": case_version}
+        known = [(_report_field(evidence, field), value) for field, value in expected.items()]
+        confirmed = sum(actual is not None and value is not None and _same_id(actual, value)
+                        for actual, value in known)
+        conflicting = sum(actual is not None and value is not None and not _same_id(actual, value)
+                          for actual, value in known)
+        completeness = sum(actual is not None for actual, _ in known)
+        return (confirmed, -conflicting, completeness, _report_results(evidence) is not None)
+
+    # Prefer evidence with explicit matching execution identity, not the first
+    # filename that happens to contain results.
+    return max(candidates, key=scope_rank)
 
 
 def _compare_projection(
@@ -121,6 +133,48 @@ def _compare_projection(
         )
 
 
+def _report_result_evidences(
+    report_id: Any,
+    evidence_by_id: dict[str, list[tuple[Path, dict[str, Any]]]],
+    *,
+    case_id: Any = None,
+    case_version: Any = None,
+) -> list[dict[str, Any]]:
+    """Select one provable report scope; unknown fields cannot bridge conflicts."""
+    if isinstance(report_id, bool):
+        return []
+    records = [evidence for _, evidence in evidence_by_id.get(str(report_id), [])]
+    expected_scope = {"report_type": 10, "case_id": case_id, "case_version": case_version}
+    conflicted_fields: set[str] = set()
+    incompatible_with_expected: set[str] = set()
+
+    for field, expected in expected_scope.items():
+        known = [_report_field(evidence, field) for evidence in records]
+        known = [value for value in known if value is not None]
+        if known and any(not _same_id(value, known[0]) for value in known[1:]):
+            conflicted_fields.add(field)
+            # Multiple known scopes without authoritative identity cannot be merged.
+            if expected is None:
+                return []
+        if expected is not None and any(not _same_id(value, expected) for value in known):
+            incompatible_with_expected.add(field)
+
+    compatible = []
+    for evidence in records:
+        for field, expected in expected_scope.items():
+            actual = _report_field(evidence, field)
+            if actual is None:
+                # Missing metadata may complement a single known scope, but must
+                # not fill results when competing identities are present.
+                if field in conflicted_fields or field in incompatible_with_expected:
+                    break
+            elif expected is not None and not _same_id(actual, expected):
+                break
+        else:
+            compatible.append(evidence)
+    return compatible
+
+
 def _check_report_result(
     findings: list[dict[str, str]],
     *,
@@ -129,18 +183,25 @@ def _check_report_result(
     result_field: str,
     expected: dict[str, Any],
     report_id: Any,
-    evidence: dict[str, Any],
+    evidences: list[dict[str, Any]],
 ) -> None:
-    """Check one declared result; never substitute another field's result."""
+    """Check one declared result across compatible pieces of its report."""
     scenario_path = f"{scenario_path}:{result_field}"
-    results = _report_results(evidence)
-    if results is None:
+    if not evidences:
+        _finding(
+            findings, "ERROR", "SCENARIO_RESULT_MAPPING_MISSING", scenario_path,
+            f"Report {report_id} has no reliably scoped evidence for this scenario.",
+        )
+        return
+    result_parts = [_report_results(evidence) for evidence in evidences]
+    if all(part is None for part in result_parts):
         _finding(
             findings, "WARNING", "REPORT_STEP_RESULTS_UNAVAILABLE", scenario_path,
             f"Report {report_id} has no readable scenario_results/step_results; scenario result cannot be independently matched.",
         )
         return
 
+    results = [item for part in result_parts if part is not None for item in part]
     scenario_key = scenario.get("scenario_key")
     result_id = expected.get("result_id")
     matched = None
@@ -164,6 +225,23 @@ def _check_report_result(
         _finding(findings, "WARNING", "SCENARIO_RESULT_STATUS_UNKNOWN", scenario_path, f"Report {report_id} does not expose a status for scenario {scenario_key!r}.")
 
 
+def _report_conflict(first: dict[str, Any], second: dict[str, Any]) -> str | None:
+    """Compare overlapping facts; complementary snapshots may share one report ID."""
+    for field in ("report_type", "case_id", "case_version"):
+        a, b = _report_field(first, field), _report_field(second, field)
+        if a is not None and b is not None and not _same_id(a, b):
+            return f"{field} differs"
+    a_results, b_results = _report_results(first), _report_results(second)
+    if a_results is not None and b_results is not None:
+        for a in a_results:
+            for b in b_results:
+                same_key = a.get("scenario_key") is not None and a.get("scenario_key") == b.get("scenario_key")
+                same_result = a.get("result_id") is not None and _same_id(a.get("result_id"), b.get("result_id"))
+                if (same_key or same_result) and a.get("status") is not None and b.get("status") is not None and a["status"] != b["status"]:
+                    return "same scenario/Step result has conflicting status"
+    return None
+
+
 def validate_api_index(root: Path) -> list[dict[str, str]]:
     findings: list[dict[str, str]] = []
     index_path = root / "index.json"
@@ -185,8 +263,20 @@ def validate_api_index(root: Path) -> list[dict[str, str]]:
             evidence = _load_json(evidence_path, findings)
             if isinstance(evidence, dict):
                 report_id = _report_id(evidence)
-                if report_id is not None:
+                if isinstance(report_id, bool):
+                    _finding(findings, "ERROR", "REPORT_ID_BOOLEAN", str(evidence_path),
+                             "Report ID must not be boolean.")
+                elif report_id is not None:
                     evidence_by_id.setdefault(str(report_id), []).append((evidence_path, evidence))
+
+    for report_id, records in evidence_by_id.items():
+        for position, (path, evidence) in enumerate(records):
+            for earlier_path, earlier_evidence in records[:position]:
+                conflict = _report_conflict(earlier_evidence, evidence)
+                if conflict:
+                    _finding(findings, "WARNING", "REPORT_EVIDENCE_CONFLICT", str(path),
+                             f"Report {report_id} has conflicting evidence in {earlier_path.name} and {path.name}: {conflict}.")
+                    break
 
     seen_api_codes: set[str] = set()
     for position, entry in enumerate(entries):
@@ -230,6 +320,16 @@ def validate_api_index(root: Path) -> list[dict[str, str]]:
                 findings, index_entry=entry, interface_platform=platform,
                 index_field=index_field, platform_field=platform_field, path=str(interface_path),
             )
+
+        for field in ("case_ids", "historical_case_ids"):
+            for record, source_path in ((entry, entry_path), (platform, str(interface_path))):
+                values = record.get(field)
+                if isinstance(values, list) and any(
+                    _same_id(value, earlier)
+                    for position, value in enumerate(values) for earlier in values[:position]
+                ):
+                    _finding(findings, "ERROR", "DUPLICATE_CASE_ID", source_path,
+                             f"{field} contains duplicate Case IDs.")
 
         current_case_id = platform.get("case_id")
         if entry.get("current_version_formal_status") in {"SUCCESS", "PASS", "FORMAL_RUN_PASSED_CURRENT_VERSION", "FAILURE", "FAIL"} and platform.get("formal_report_id") is not None:
@@ -277,6 +377,21 @@ def validate_api_index(root: Path) -> list[dict[str, str]]:
                     _finding(findings, "ERROR", "CURRENT_STEP_MAPPING_MISSING", scenario_path, "Enabled scenario must map to current_case_id and current_step_id.")
                 elif current_case_id is not None and not _same_id(scenario.get("current_case_id"), current_case_id):
                     _finding(findings, "ERROR", "SCENARIO_CURRENT_CASE_MISMATCH", scenario_path, "Enabled scenario maps to a Case other than the authoritative current Case.")
+
+        # Scenario records can merge into one platform Step. Compare distinct current
+        # Step mappings only as a review hint, never as an equivalent count invariant.
+        current_steps = {
+            str(scenario["current_step_id"])
+            for _, scenario in valid_scenarios
+            if scenario.get("current_enabled") is True
+            and scenario.get("current_step_id") is not None
+            and (current_case_id is None or _same_id(scenario.get("current_case_id"), current_case_id))
+        }
+        platform_enabled = platform.get("enabled_step_count")
+        if isinstance(platform_enabled, int) and not isinstance(platform_enabled, bool):
+            if len(current_steps) != platform_enabled:
+                _finding(findings, "WARNING", "ENABLED_STEP_MAPPING_COUNT_DIFFERS", str(interface_path),
+                         f"Distinct enabled current Step mappings={len(current_steps)}, platform enabled Steps={platform_enabled}; scenario count is not a Step count, review mapping coverage.")
 
         coverage = interface.get("coverage_review")
         if coverage is not None and not isinstance(coverage, dict):
@@ -336,7 +451,19 @@ def validate_api_index(root: Path) -> list[dict[str, str]]:
             _finding(findings, "WARNING", "LEGACY_REQUIREMENT_PROJECTION", str(index_path), f"{api_code} has a latest_incremental_requirement but no requirement_updates history; preserve it as legacy until provenance is established.")
 
         latest_report_id = entry.get("latest_formal_report_id")
-        latest_report = _report_evidence(latest_report_id, evidence_by_id) if latest_report_id is not None else None
+        same_current_report = (
+            latest_report_id is not None
+            and entry.get("current_version_formal_report_id") is not None
+            and _same_id(latest_report_id, entry["current_version_formal_report_id"])
+        )
+        latest_report = (
+            _report_evidence(
+                latest_report_id, evidence_by_id,
+                case_id=current_case_id if same_current_report else None,
+                case_version=entry.get("last_formal_report_case_version"),
+            )
+            if latest_report_id is not None else None
+        )
         if latest_report_id is not None and latest_report is None:
             _finding(findings, "WARNING", "LATEST_FORMAL_REPORT_EVIDENCE_MISSING", str(index_path), f"{api_code} latest formal report {latest_report_id} has no local evidence file; report version remains UNKNOWN.")
         elif latest_report is not None:
@@ -374,7 +501,10 @@ def validate_api_index(root: Path) -> list[dict[str, str]]:
         if current_status in {"SUCCESS", "PASS", "FORMAL_RUN_PASSED_CURRENT_VERSION", "FAILURE", "FAIL"} and current_report_id is None:
             _finding(findings, "ERROR", "CURRENT_RUN_REPORT_MISSING", str(index_path), f"{api_code} has current-version run status {current_status} but no current-version formal report ID.")
         if current_report_id is not None:
-            current_report = _report_evidence(current_report_id, evidence_by_id)
+            current_report = _report_evidence(
+                current_report_id, evidence_by_id,
+                case_id=current_case_id, case_version=platform.get("case_version"),
+            )
             if current_report is None:
                 _finding(findings, "WARNING", "CURRENT_REPORT_EVIDENCE_MISSING", str(index_path), f"{api_code} current-version report {current_report_id} has no local evidence file.")
             else:
@@ -412,10 +542,21 @@ def validate_api_index(root: Path) -> list[dict[str, str]]:
                         f"Scenario {scenario.get('scenario_key')!r} references report {report_id} without local evidence.",
                     )
                     continue
+                expected_case_id = None
+                expected_version = None
+                if current_report_id is not None and _same_id(report_id, current_report_id):
+                    expected_case_id = current_case_id
+                    expected_version = platform.get("case_version")
+                elif latest_report_id is not None and _same_id(report_id, latest_report_id):
+                    expected_version = entry.get("last_formal_report_case_version")
+                compatible_evidences = _report_result_evidences(
+                    report_id, evidence_by_id,
+                    case_id=expected_case_id, case_version=expected_version,
+                )
                 _check_report_result(
                     findings, scenario=scenario, scenario_path=scenario_path,
                     result_field=result_field, expected=result,
-                    report_id=report_id, evidence=report_record[1],
+                    report_id=report_id, evidences=compatible_evidences,
                 )
     return findings
 

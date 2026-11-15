@@ -263,5 +263,302 @@ class ApiIndexValidationTests(unittest.TestCase):
         self.assertIn("GROUP_EVIDENCE_SCOPE_MISSING", self.codes())
 
 
+    def test_id_comparison_rejects_boolean_values(self):
+        self.assertFalse(MODULE._same_id(True, "True"))
+        self.assertFalse(MODULE._same_id(True, 1))
+        self.assertFalse(MODULE._same_id_list([True], ["True"]))
+        self.assertTrue(MODULE._same_id(100, "100"))
+
+    def test_boolean_report_id_does_not_match_string_report_id(self):
+        self.report["report_id"] = True
+        self.index_entry["latest_formal_report_id"] = "True"
+        self.index_entry["current_version_formal_report_id"] = "True"
+        self.interface["platform"]["formal_report_id"] = "True"
+        self.interface["scenarios"][0]["formal_result"]["report_id"] = "True"
+        self.write_fixture()
+        self.assertIn("REPORT_ID_BOOLEAN", self.codes())
+        self.assertIn("LATEST_FORMAL_REPORT_EVIDENCE_MISSING", self.codes())
+
+    def test_duplicate_current_case_ids_even_when_projections_agree(self):
+        self.interface["platform"]["case_ids"] = [100, "100"]
+        self.index_entry["case_ids"] = [100, "100"]
+        self.index_entry["case_count"] = 2
+        self.write_fixture()
+        duplicates = [f for f in self.findings() if f["code"] == "DUPLICATE_CASE_ID"]
+        self.assertEqual(len(duplicates), 2)
+        self.assertTrue(all(f["severity"] == "ERROR" for f in duplicates))
+
+    def test_duplicate_historical_case_ids_are_detected(self):
+        self.interface["platform"]["historical_case_ids"] = [200, "200"]
+        self.index_entry["historical_case_ids"] = [200, "200"]
+        self.index_entry["historical_case_count"] = 2
+        self.write_fixture()
+        self.assertIn("DUPLICATE_CASE_ID", self.codes())
+
+    def test_two_evidence_files_conflicting_case_version_warn(self):
+        alternate = dict(self.report, case_version=4)
+        (self.root / "evidence" / "run-900-other.json").write_text(
+            json.dumps(alternate), encoding="utf-8"
+        )
+        matches = [f for f in self.findings() if f["code"] == "REPORT_EVIDENCE_CONFLICT"]
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["severity"], "WARNING")
+
+    def test_two_evidence_files_conflicting_step_result_warn(self):
+        alternate = json.loads(json.dumps(self.report))
+        alternate["scenario_results"][0]["status"] = "FAILURE"
+        (self.root / "evidence" / "run-900-other.json").write_text(
+            json.dumps(alternate), encoding="utf-8"
+        )
+        self.assertIn("REPORT_EVIDENCE_CONFLICT", self.codes())
+
+    def test_matching_and_complementary_report_evidence_are_allowed(self):
+        (self.root / "evidence" / "run-900-other.json").write_text(
+            json.dumps({"report_id": 900, "report_type": 10, "case_id": 100}),
+            encoding="utf-8"
+        )
+        self.assertNotIn("REPORT_EVIDENCE_CONFLICT", self.codes())
+
+    def test_complementary_report_files_cover_distinct_scenarios(self):
+        """One formal report may store per-scenario results in separate files."""
+        self.interface["scenarios"].append({
+            "scenario_key": "SCN-000002", "current_enabled": False,
+            "formal_result": {"report_id": 900, "result_id": 902, "status": "SUCCESS"},
+            "latest_formal_result": {"report_id": 900, "result_id": 902, "status": "SUCCESS"},
+        })
+        self.interface["coverage_review"]["scenario_record_count"] = 2
+        self.write_fixture()
+        alternate = {
+            "report_id": 900, "report_type": 10, "case_id": 100, "case_version": 3,
+            "scenario_results": [
+                {"scenario_key": "SCN-000002", "result_id": 902, "status": "SUCCESS"}
+            ],
+        }
+        (self.root / "evidence" / "run-900-other.json").write_text(
+            json.dumps(alternate), encoding="utf-8"
+        )
+        self.assertEqual(self.findings(), [])
+
+    def test_complementary_report_still_checks_result_status(self):
+        self.report["scenario_results"] = []
+        self.write_fixture()
+        alternate = {
+            "report_id": 900, "report_type": 10, "case_id": 100, "case_version": 3,
+            "scenario_results": [
+                {"scenario_key": "SCN-000001", "result_id": 901, "status": "FAILURE"}
+            ],
+        }
+        (self.root / "evidence" / "run-900-other.json").write_text(
+            json.dumps(alternate), encoding="utf-8"
+        )
+        self.assertIn("SCENARIO_RESULT_STATUS_MISMATCH", self.codes())
+
+    def test_complementary_report_still_detects_missing_scenario(self):
+        self.interface["scenarios"][0]["formal_result"]["result_id"] = 999
+        self.interface["scenarios"][0]["scenario_key"] = "SCN-UNKNOWN"
+        self.write_fixture()
+        alternate = {"report_id": 900, "report_type": 10, "case_id": 100,
+                     "case_version": 3, "scenario_results": []}
+        (self.root / "evidence" / "run-900-other.json").write_text(
+            json.dumps(alternate), encoding="utf-8"
+        )
+        self.assertIn("SCENARIO_RESULT_MAPPING_MISSING", self.codes())
+
+    def test_conflicting_report_version_cannot_fill_formal_result(self):
+        self.report["scenario_results"] = []
+        self.write_fixture()
+        alternate = {"report_id": 900, "report_type": 10, "case_id": 100,
+                     "case_version": 4,
+                     "scenario_results": [{"scenario_key": "SCN-000001",
+                                           "result_id": 901, "status": "SUCCESS"}]}
+        (self.root / "evidence" / "run-900-other.json").write_text(
+            json.dumps(alternate), encoding="utf-8"
+        )
+        codes = self.codes()
+        self.assertIn("REPORT_EVIDENCE_CONFLICT", codes)
+        self.assertIn("SCENARIO_RESULT_MAPPING_MISSING", codes)
+        self.assertNotIn("LATEST_REPORT_VERSION_MISMATCH", codes)
+        self.assertNotIn("CURRENT_REPORT_VERSION_MISMATCH", codes)
+
+    def test_debug_report_cannot_supply_formal_scenario_result(self):
+        self.report["scenario_results"] = []
+        self.write_fixture()
+        alternate = {"report_id": 900, "report_type": 20, "case_id": 100,
+                     "case_version": 3,
+                     "scenario_results": [{"scenario_key": "SCN-000001",
+                                           "result_id": 901, "status": "SUCCESS"}]}
+        (self.root / "evidence" / "run-900-debug.json").write_text(
+            json.dumps(alternate), encoding="utf-8"
+        )
+        self.assertIn("REPORT_EVIDENCE_CONFLICT", self.codes())
+        self.assertIn("SCENARIO_RESULT_MAPPING_MISSING", self.codes())
+
+    def test_unknown_identity_cannot_bridge_conflicting_report_versions(self):
+        """Unknown identity must not connect versions 3 and 4 into one result set."""
+        observed_codes = []
+        for names in (("a-unknown", "b-version3", "c-version4"),
+                      ("c-unknown", "b-version3", "a-version4")):
+            with self.subTest(evidence_order=names):
+                for path in (self.root / "evidence").glob("*.json"):
+                    path.unlink()
+                unknown = {"report_id": 900, "report_type": 10,
+                           "scenario_results": []}
+                version3 = {"report_id": 900, "report_type": 10, "case_id": 100,
+                            "case_version": 3, "scenario_results": []}
+                version4 = {"report_id": 900, "report_type": 10, "case_id": 100,
+                            "case_version": 4, "scenario_results": [
+                                {"scenario_key": "SCN-000001", "result_id": 901,
+                                 "status": "SUCCESS"}]}
+                for name, document in zip(names, (unknown, version3, version4)):
+                    (self.root / "evidence" / f"{name}.json").write_text(
+                        json.dumps(document), encoding="utf-8"
+                    )
+                findings = self.findings()
+                codes = {item["code"] for item in findings}
+                self.assertIn("REPORT_EVIDENCE_CONFLICT", codes)
+                self.assertIn("SCENARIO_RESULT_MAPPING_MISSING", codes)
+                observed_codes.append(codes)
+        self.assertEqual(observed_codes[0], observed_codes[1])
+
+    def test_conflicting_version_with_valid_current_result_keeps_current_scope(self):
+        """Version 4 must not disqualify a valid version 3 result."""
+        unknown = {"report_id": 900, "report_type": 10,
+                   "scenario_results": []}
+        (self.root / "evidence" / "a-unknown.json").write_text(
+            json.dumps(unknown), encoding="utf-8"
+        )
+        other_version = {"report_id": 900, "report_type": 10, "case_id": 100,
+                         "case_version": 4, "scenario_results": []}
+        (self.root / "evidence" / "z-version4.json").write_text(
+            json.dumps(other_version), encoding="utf-8"
+        )
+        codes = self.codes()
+        self.assertIn("REPORT_EVIDENCE_CONFLICT", codes)
+        self.assertNotIn("SCENARIO_RESULT_MAPPING_MISSING", codes)
+        self.assertNotIn("LATEST_REPORT_VERSION_MISMATCH", codes)
+        self.assertNotIn("CURRENT_REPORT_VERSION_MISMATCH", codes)
+
+    def test_unknown_identity_results_cannot_fill_conflicted_version_scope(self):
+        """An unscoped result is ambiguous when known versions disagree."""
+        self.report["scenario_results"] = []
+        self.write_fixture()
+        (self.root / "evidence" / "a-unknown.json").write_text(
+            json.dumps({"report_id": 900, "report_type": 10,
+                        "scenario_results": [
+                            {"scenario_key": "SCN-000001", "result_id": 901,
+                             "status": "SUCCESS"}]}),
+            encoding="utf-8",
+        )
+        (self.root / "evidence" / "z-version4.json").write_text(
+            json.dumps({"report_id": 900, "report_type": 10, "case_id": 100,
+                        "case_version": 4, "scenario_results": []}),
+            encoding="utf-8",
+        )
+        codes = self.codes()
+        self.assertIn("REPORT_EVIDENCE_CONFLICT", codes)
+        self.assertIn("SCENARIO_RESULT_MAPPING_MISSING", codes)
+
+    def test_unknown_anchor_cannot_bridge_conflicting_case_ids(self):
+        self.report["scenario_results"] = []
+        self.write_fixture()
+        (self.root / "evidence" / "a-unknown.json").write_text(
+            json.dumps({"report_id": 900, "report_type": 10,
+                        "scenario_results": []}), encoding="utf-8",
+        )
+        (self.root / "evidence" / "b-other-case.json").write_text(
+            json.dumps({"report_id": 900, "report_type": 10, "case_id": 200,
+                        "case_version": 3, "scenario_results": [
+                            {"scenario_key": "SCN-000001", "result_id": 901,
+                             "status": "SUCCESS"}]}), encoding="utf-8",
+        )
+        codes = self.codes()
+        self.assertIn("REPORT_EVIDENCE_CONFLICT", codes)
+        self.assertIn("SCENARIO_RESULT_MAPPING_MISSING", codes)
+
+    def test_unknown_anchor_cannot_bridge_debug_and_formal_reports(self):
+        self.report["scenario_results"] = []
+        self.write_fixture()
+        (self.root / "evidence" / "a-unknown.json").write_text(
+            json.dumps({"report_id": 900, "scenario_results": []}),
+            encoding="utf-8",
+        )
+        (self.root / "evidence" / "b-debug.json").write_text(
+            json.dumps({"report_id": 900, "report_type": 20, "case_id": 100,
+                        "case_version": 3, "scenario_results": [
+                            {"scenario_key": "SCN-000001", "result_id": 901,
+                             "status": "SUCCESS"}]}), encoding="utf-8",
+        )
+        codes = self.codes()
+        self.assertIn("REPORT_EVIDENCE_CONFLICT", codes)
+        self.assertIn("SCENARIO_RESULT_MAPPING_MISSING", codes)
+
+    def test_latest_current_report_case_selection_is_permutation_invariant(self):
+        """Known current Case takes precedence over conflicting Case in all file orders."""
+        from itertools import permutations
+
+        matching = {
+            "report_id": 900, "report_type": 10, "case_id": 100,
+            "case_version": 3, "scenario_results": [
+                {"scenario_key": "SCN-000001", "result_id": 901, "status": "SUCCESS"}
+            ],
+        }
+        conflicting = {
+            "report_id": 900, "report_type": 10, "case_id": 200,
+            "case_version": 3, "scenario_results": [
+                {"scenario_key": "SCN-000001", "result_id": 901, "status": "SUCCESS"}
+            ],
+        }
+        unknown = {"report_id": 900, "report_type": 10, "scenario_results": []}
+        for order in permutations((matching, conflicting, unknown)):
+            with self.subTest(case_ids=[record.get("case_id") for record in order]):
+                for evidence_path in (self.root / "evidence").glob("*.json"):
+                    evidence_path.unlink()
+                for filename, record in zip(("a.json", "b.json", "c.json"), order):
+                    (self.root / "evidence" / filename).write_text(
+                        json.dumps(record), encoding="utf-8"
+                    )
+                self.assertEqual(self.codes(), {"REPORT_EVIDENCE_CONFLICT"})
+
+    def test_historical_latest_report_does_not_use_current_case_as_identity(self):
+        """A distinct historical latest report must retain its own Case identity."""
+        self.index_entry["latest_formal_report_id"] = 901
+        self.index_entry["last_formal_report_case_version"] = 2
+        self.interface["platform"]["formal_report_id"] = 901
+        self.index_entry["historical_case_ids"] = [200]
+        self.interface["platform"]["historical_case_ids"] = [200]
+        self.index_entry["historical_case_count"] = 1
+        self.write_fixture()
+        history = {
+            "report_id": 901, "report_type": 10, "case_id": 200,
+            "case_version": 2, "scenario_results": []
+        }
+        (self.root / "evidence" / "historical.json").write_text(
+            json.dumps(history), encoding="utf-8"
+        )
+        codes = self.codes()
+        self.assertNotIn("LATEST_REPORT_CASE_NOT_RECOGNIZED", codes)
+        self.assertNotIn("LATEST_REPORT_VERSION_MISMATCH", codes)
+
+    def test_duplicate_identical_report_evidence_is_not_a_conflict(self):
+        (self.root / "evidence" / "run-900-copy.json").write_text(
+            json.dumps(self.report), encoding="utf-8"
+        )
+        self.assertNotIn("REPORT_EVIDENCE_CONFLICT", self.codes())
+
+    def test_platform_enabled_steps_without_matching_local_step_mapping_warn(self):
+        self.interface["platform"]["enabled_step_count"] = 2
+        self.index_entry["active_step_count"] = 2
+        self.write_fixture()
+        matches = [f for f in self.findings() if f["code"] == "ENABLED_STEP_MAPPING_COUNT_DIFFERS"]
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["severity"], "WARNING")
+
+    def test_multiple_scenarios_merged_to_same_step_do_not_warn(self):
+        merged = dict(self.interface["scenarios"][0], scenario_key="SCN-000002")
+        self.interface["scenarios"].append(merged)
+        self.interface["coverage_review"]["scenario_record_count"] = 2
+        self.write_fixture()
+        self.assertNotIn("ENABLED_STEP_MAPPING_COUNT_DIFFERS", self.codes())
+
 if __name__ == "__main__":
     unittest.main()
