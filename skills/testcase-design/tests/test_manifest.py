@@ -93,14 +93,17 @@ def write_manifest(root, data, payloads=None):
 
 
 def publish_for_test(*args, **kwargs):
-    """Supply the current baseline explicitly for low-level unit-test publishers."""
+    """Explicit test-only compatibility path for building legacy Manifest fixtures."""
     root = Path(args[0] if args else kwargs["requirement_root"])
     if "expected_base_version" not in kwargs:
         versions = manifest._version_directory_ids(root) if root.exists() else set()
         kwargs["expected_base_version"] = (
             max(versions, key=manifest._version_parts) if versions else None
         )
-    return manifest.publish_version(*args, **kwargs)
+    with manifest._requirement_publish_lock(root):
+        return manifest._publish_version_locked(
+            *args, **kwargs, allow_legacy_test_fixture=True
+        )
 
 
 def _concurrent_publish_worker(
@@ -125,6 +128,8 @@ def _concurrent_publish_worker(
             root, REQ_ID, "示例需求", staged_artifacts,
             created_at=created_at,
             expected_base_version=expected_base_version,
+            module_id="225",
+            module_name="销售结果",
         )
         result_queue.put({
             "name": name, "result": "PASS", "version_id": result["version_id"],
@@ -145,34 +150,46 @@ class IdentityAndRevisionTests(unittest.TestCase):
         output = __import__("io").StringIO()
         from unittest.mock import patch
         with patch.object(manifest.sys, "stdout", output):
-            status = manifest.main(["directory-name", REQ_ID, "模拟模块/环节:优化?"])
+            status = manifest.main([
+                "directory-name", REQ_ID, "模拟模块/环节:优化?",
+                "--module-id", "225", "--module-name", "销售结果",
+            ])
         self.assertEqual(status, 0)
         self.assertTrue(output.getvalue().isascii())
-        self.assertEqual(json.loads(output.getvalue())["directory_name"], expected)
+        payload = json.loads(output.getvalue())
+        self.assertEqual(payload["directory_name"], expected)
+        self.assertEqual(payload["module_id"], "225")
+        self.assertEqual(payload["module_name"], "销售结果")
+        self.assertEqual(payload["module_directory_name"], "【销售结果】")
+        self.assertEqual(
+            payload["archive_relative_path"],
+            "【销售结果】/" + expected,
+        )
 
-    def test_module_directory_and_archive_path_preserve_original_bracketed_title(self):
-        requirement_name = "【模拟模块】示例查询条件调整"
-        self.assertEqual(manifest.module_directory_name(requirement_name), "【模拟模块】")
+    def test_module_directory_uses_zentao_module_name_not_requirement_title(self):
+        requirement_name = "【标题中的旧模块】示例查询条件调整"
+        self.assertEqual(manifest.module_directory_name("销售/结果:华东?"), "【销售_结果_华东】")
         self.assertEqual(
-            manifest.requirement_archive_relative_path("900548", requirement_name),
-            "【模拟模块】/900548-【模拟模块】示例查询条件调整",
+            manifest.requirement_archive_relative_path("900548", requirement_name, "销售结果"),
+            "【销售结果】/900548-【标题中的旧模块】示例查询条件调整",
         )
-        self.assertEqual(
-            manifest.module_directory_name("前缀【示例子模块】后缀【模拟模块】"),
-            "【示例子模块】",
-        )
-        self.assertEqual(manifest.module_directory_name("没有模块标识的需求"), "【未分类】")
+        with self.assertRaisesRegex(manifest.ManifestError, "module_name"):
+            manifest.module_directory_name("///")
+        with self.assertRaisesRegex(manifest.ManifestError, "保留目录名"):
+            manifest.module_directory_name("CON")
+        with self.assertRaisesRegex(manifest.ManifestError, "module_name"):
+            manifest.requirement_archive_relative_path("900548", requirement_name, "")
         output = __import__("io").StringIO()
         from unittest.mock import patch
         with patch.object(manifest.sys, "stdout", output):
-            status = manifest.main(["directory-name", "900548", requirement_name])
+            status = manifest.main([
+                "directory-name", "900548", requirement_name,
+                "--module-id", "225", "--module-name", "销售结果",
+            ])
         self.assertEqual(status, 0)
         payload = json.loads(output.getvalue())
-        self.assertEqual(payload["module_name"], "【模拟模块】")
-        self.assertEqual(
-            payload["archive_relative_path"],
-            "【模拟模块】/900548-【模拟模块】示例查询条件调整",
-        )
+        self.assertEqual(payload["module_name"], "销售结果")
+        self.assertEqual(payload["archive_relative_path"], "【销售结果】/900548-【标题中的旧模块】示例查询条件调整")
 
     def test_safe_relative_path_rejects_windows_normalized_components(self):
         for value in (
@@ -613,7 +630,7 @@ class ManifestPublishTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.base = Path(self.temp.name)
-        self.root = self.base / "output" / "900661-示例需求"
+        self.root = self.base / "【销售结果】" / f"{REQ_ID}-示例需求"
 
     def publish_first(self, status="complete"):
         specs = stage_bundle(self.base / "stage-v1")
@@ -1268,7 +1285,10 @@ class ManifestPublishTests(unittest.TestCase):
         specs = stage_bundle(self.base / "stage-cli")
         spec_path = self.base / "publish-spec.json"
         spec_path.write_text(json.dumps({
-            "requirement": {"id": REQ_ID, "name": "示例需求"},
+            "requirement": {
+                "id": REQ_ID, "name": "示例需求",
+                "module_id": "225", "module_name": "销售结果",
+            },
             "delivery_status": "complete",
             "expected_base_version": None,
             "artifacts": specs,
@@ -1276,11 +1296,13 @@ class ManifestPublishTests(unittest.TestCase):
         }, ensure_ascii=False), encoding="utf-8")
         output = __import__("io").StringIO()
         from unittest.mock import patch
+        cli_root = self.base / "【销售结果】" / f"{REQ_ID}-示例需求"
         with patch.object(manifest.sys, "stdout", output):
-            status = manifest.main(["publish", str(self.root), str(spec_path)])
+            status = manifest.main(["publish", str(cli_root), str(spec_path)])
         self.assertEqual(status, 0)
         self.assertTrue(output.getvalue().isascii())
         self.assertEqual(json.loads(output.getvalue())["result"], "MANIFEST_PUBLISH_PASS")
+        self.assertTrue((cli_root / "versions" / "20261031-v1" / "manifest.json").is_file())
 
 
 
@@ -1686,12 +1708,125 @@ class IncrementalHistoryReuseTests(unittest.TestCase):
         self.assertEqual(status, 0)
         self.assertEqual(json.loads(output.getvalue())["result"], "MANIFEST_HISTORY_PASS")
 
+    def test_publish_persists_and_freezes_zentao_module_metadata(self):
+        sql_source = self.base / "module-query.sql"
+        sql_source.write_text("select 1;", encoding="utf-8")
+        specs = [{
+            "category": "sql", "role": "query",
+            "path": "sql/query.sql", "source_path": str(sql_source),
+        }]
+        legacy_root = self.base / "历史标题目录" / f"{REQ_ID}-【标题旧模块】示例需求"
+        first = publish_for_test(
+            legacy_root, REQ_ID, "【标题旧模块】示例需求", specs,
+            created_at="2026-10-31T10:00:00+08:00",
+        )
+        legacy_manifest_path = (
+            legacy_root / "versions" / "20261031-v1" / "manifest.json"
+        )
+        legacy_manifest_sha = hashlib.sha256(legacy_manifest_path.read_bytes()).hexdigest()
+        self.assertNotIn("module_id", first["manifest"]["requirement"])
+
+        second = manifest.publish_version(
+            legacy_root, REQ_ID, "【标题旧模块】示例需求", specs,
+            delivery_status="partial",
+            created_at="2026-10-31T10:05:00+08:00",
+            expected_base_version="20261031-v1",
+            module_id="225", module_name="销售结果",
+        )
+        self.assertEqual(second["manifest"]["requirement"]["module_id"], "225")
+        self.assertEqual(second["manifest"]["requirement"]["module_name"], "销售结果")
+        self.assertEqual(
+            hashlib.sha256(legacy_manifest_path.read_bytes()).hexdigest(),
+            legacy_manifest_sha,
+        )
+
+        third = manifest.publish_version(
+            legacy_root, REQ_ID, "【标题旧模块】示例需求", specs,
+            delivery_status="complete",
+            created_at="2026-10-31T10:10:00+08:00",
+            expected_base_version="20261031-v2",
+        )
+        self.assertEqual(third["manifest"]["requirement"]["module_id"], "225")
+        self.assertEqual(third["manifest"]["requirement"]["module_name"], "销售结果")
+        with self.assertRaisesRegex(manifest.ManifestError, "冻结模块不一致"):
+            manifest.publish_version(
+                legacy_root, REQ_ID, "【标题旧模块】示例需求", specs,
+                created_at="2026-10-31T10:15:00+08:00",
+                expected_base_version="20261031-v3",
+                module_id="226", module_name="新模块",
+            )
+
+    def test_public_publish_rejects_missing_module_before_creating_parent(self):
+        root = self.base / "【销售结果】" / f"{REQ_ID}-示例需求"
+        specs = stage_bundle(self.base / "stage-public-missing-module")
+        with self.assertRaisesRegex(
+            manifest.ManifestError, "必须先通过禅道 getNeedDetailById"
+        ):
+            manifest.publish_version(
+                root, REQ_ID, "示例需求", specs,
+                created_at="2026-10-31T10:00:00+08:00",
+                expected_base_version=None,
+            )
+        self.assertFalse(root.parent.exists())
+        self.assertFalse(root.exists())
+        with self.assertRaises(TypeError):
+            manifest.publish_version(
+                root, REQ_ID, "示例需求", specs,
+                module_id="225", module_name="销售结果",
+                require_module_metadata=False,
+            )
+        self.assertFalse(root.parent.exists())
+        self.assertFalse(root.exists())
+
+    def test_publish_cli_rejects_root_not_matching_zentao_module(self):
+        specs = stage_bundle(self.base / "stage-cli-wrong-module")
+        spec_path = self.base / "publish-spec-wrong-module.json"
+        spec_path.write_text(json.dumps({
+            "requirement": {
+                "id": REQ_ID, "name": "示例需求",
+                "module_id": "225", "module_name": "销售结果",
+            },
+            "delivery_status": "complete",
+            "expected_base_version": None,
+            "artifacts": specs,
+        }, ensure_ascii=False), encoding="utf-8")
+        output = __import__("io").StringIO()
+        from unittest.mock import patch
+        wrong_root = self.base / "【标题模块】" / f"{REQ_ID}-示例需求"
+        with patch.object(manifest.sys, "stdout", output):
+            status = manifest.main(["publish", str(wrong_root), str(spec_path)])
+        self.assertEqual(status, 1)
+        self.assertIn("必须匹配禅道 moduleName", json.loads(output.getvalue())["error"])
+        self.assertFalse(wrong_root.parent.exists())
+        self.assertFalse((wrong_root / "versions").exists())
+
+    def test_publish_cli_requires_module_metadata_for_first_archive(self):
+        specs = stage_bundle(self.base / "stage-cli-missing-module")
+        spec_path = self.base / "publish-spec-missing-module.json"
+        spec_path.write_text(json.dumps({
+            "requirement": {"id": REQ_ID, "name": "示例需求"},
+            "delivery_status": "complete",
+            "expected_base_version": None,
+            "artifacts": specs,
+        }, ensure_ascii=False), encoding="utf-8")
+        output = __import__("io").StringIO()
+        from unittest.mock import patch
+        with patch.object(manifest.sys, "stdout", output):
+            status = manifest.main(["publish", str(self.root), str(spec_path)])
+        self.assertEqual(status, 1)
+        self.assertIn("必须先通过禅道 getNeedDetailById", json.loads(output.getvalue())["error"])
+        self.assertFalse(self.root.parent.exists())
+        self.assertFalse(self.root.exists())
+
     def test_publish_cli_requires_explicit_expected_base_version(self):
         self.root.mkdir(parents=True, exist_ok=True)
         specs = stage_bundle(self.base / "stage-missing-base")
         spec_path = self.base / "missing-base.json"
         spec_path.write_text(json.dumps({
-            "requirement": {"id": REQ_ID, "name": "示例需求"},
+            "requirement": {
+                "id": REQ_ID, "name": "示例需求",
+                "module_id": "225", "module_name": "销售结果",
+            },
             "delivery_status": "complete",
             "artifacts": specs,
         }, ensure_ascii=False), encoding="utf-8")

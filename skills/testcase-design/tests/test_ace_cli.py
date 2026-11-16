@@ -135,7 +135,8 @@ def make_preflight_fixture(
         "open_questions": [],
     }
     oracle_path.write_text(json.dumps(oracle, ensure_ascii=False), encoding="utf-8")
-    requirement_root = base / "output" / (str(target["story_id"]) + "-" + str(target["story_name"]))
+    module_name = "ACE 模拟模块"
+    requirement_root = base / ("【" + module_name + "】") / (str(target["story_id"]) + "-" + str(target["story_name"]))
     staged = [
         {"category": "testcases", "role": "markdown", "path": "testcases/testcases.md", "source_path": str(markdown_path)},
         {"category": "testcases", "role": "xmind", "path": "testcases/testcases.xmind", "source_path": str(xmind_path)},
@@ -144,6 +145,7 @@ def make_preflight_fixture(
     published = manifest_tools.publish_version(
         requirement_root, str(target["story_id"]), str(target["story_name"]), staged,
         delivery_status=manifest_delivery_status, created_at="2026-11-02T10:00:00+08:00",
+        module_id="225", module_name=module_name,
     )
     manifest_path = Path(published["version_path"]) / "manifest.json"
     preview = verified_preview(markdown, target)

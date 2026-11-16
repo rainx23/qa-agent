@@ -98,15 +98,16 @@
 
 正式需求归档根目录：
 
-`output/【<模块>】/<需求编号>-<需求名称>/`
+`output/【<禅道 moduleName>】/<需求编号>-<需求名称>/`
 
-- 模块目录名直接保留需求名称中第一个全角 `【...】` 标识（包括两侧括号）；没有该标识或内容为空时归入 `【未分类】`。目录名按 Windows 规则安全处理。
-- 需求目录名继续使用完整的 `<需求编号>-<原始需求名称>`，保留 `【模块】` 和原始标题，不去掉括号、不改写需求标题。需求名称中的 Windows 非法字符仍按既有规则替换为下划线。
-- 通过 `manifest.py directory-name <需求编号> <需求名称>` 获取 `module_name`、`directory_name` 和 `archive_relative_path`；`module_name` 保留完整括号，后者用于定位完整需求根目录。
+- 一级模块目录必须使用禅道需求详情真实 `moduleName` 并在外层添加 `【】`；目录组件按 Windows 规则安全处理。不得从需求标题提取模块名或回退到“未分类”。
+- 需求目录名继续使用完整的 `<需求编号>-<原始需求名称>`，保留标题中的全部 `【】`，不去掉括号、不改写需求标题。需求名称中的 Windows 非法字符仍按既有规则替换为下划线。
+- 首次归档前按 `references/output-archive.md` 调用禅道 `getNeedDetailById` 并核对需求 ID、模块 ID、模块名称；通过 `manifest.py directory-name <需求编号> <需求名称> --module-id <module> --module-name "<moduleName>"` 获取 `module_id`、原始 `module_name`、安全目录组件 `module_directory_name`、`directory_name` 和 `archive_relative_path`。
+
 
 版本按需求统一管理，不按产物类型分别编号。同一需求同一天首次正式交付从 v1 开始，当天后续独立正式交付递增；跨日期后重新从 v1 开始。一次正式交付任务（完整或部分）只产生一个版本。临时草稿、失败重试、交付前内部修正、仅查看/咨询及无实质内容变化的重复执行不产生新版本。正式产物发生实质新增、修改或废弃时创建新版本；历史版本不覆盖。若本次修改用例，当前版本的 Markdown 保存完整的当前有效用例集合，不只保存差异条目。未变化产物保留在原来源版本目录，由当前 Manifest 引用，不重复复制。正式历史文件永久保留；只清理临时草稿、失败残留和缓存。
 
-迁移前归档正文中的旧路径引用不回写，避免改变历史正式文件 SHA；遇到旧需求根路径或旧版本/类型顺序时，按 `output/legacy-path-map.json` 定位当前路径。该映射只用于兼容查找，正式发布始终写入模块分组后的新路径。
+历史归档正文中的旧路径引用不回写，避免改变历史正式文件 SHA；遇到旧需求根路径或旧版本/类型顺序时，按 `output/legacy-path-map.json` 定位现存路径。已有需求必须先定位现存根目录，不得因新模块名称不同而创建重复根目录。历史迁移完成后映射指向禅道真实模块目录；正式发布路径和模块元数据规则见 `references/output-archive.md`。
 
 ## 需求目录内部结构
 
@@ -145,7 +146,7 @@ Manifest 是需求级正式版本账本和当前有效产物清单，不保存�
 必需字段：
 
 - `schema_version`：当前为字符串 `"1"`。
-- `requirement`：`id`、`name`。
+- `requirement`：`id`、`name`；新归档必须同时保存禅道真实 `module_id`、`module_name`。历史 Manifest 可暂时缺少这两个兼容字段；后续首次正式发布时必须补齐，已冻结的模块元数据后续版本沿用。
 - `version_id`：`YYYYMMDD-vN`，日期采用北京时间；同一需求同日递增，跨日从 v1 开始。
 - `created_at`：ISO 8601 北京时间，必须保留 `+08:00`。
 - `delivery_status`：`complete` 或 `partial`，描述本次声明交付范围及交付状态，不是业务语义验收结果。`complete` 不自动证明 Oracle 覆盖完整或业务验收通过；但发布前若已知声明范围内仍有重要业务义务未落实为可执行用例，不得将该范围宣称为完整交付。`partial` 仅用于明确限定的部分交付，并须说明已交付与未决范围，不能用来掩盖本可修正的设计遗漏。
@@ -180,10 +181,10 @@ Manifest 是需求级正式版本账本和当前有效产物清单，不保存�
 - 正常增量流程不在设计前额外运行全历史 `validate`；`manifest.py publish` 在正式提交前完整校验全部历史文件 SHA-256、历史内容指纹、来源 Manifest 追溯和身份变化关系。发布后的 `manifest.py validate` 必须保留，完成包含新版本在内的最终全历史验签。
 - 常用命令：
   ```powershell
-  python -B skills/testcase-design/tools/manifest.py directory-name <需求编号> "<需求名称>"
-  python -B skills/testcase-design/tools/manifest.py inspect output/【<模块>】/<需求编号>-<需求名称>
-  python -B skills/testcase-design/tools/manifest.py ids output/【<模块>】/<需求编号>-<需求名称> <需求编号> --count 3 --baseline-manifest output/【<模块>】/<需求编号>-<需求名称>/versions/<最新版本>/manifest.json
-  python -B skills/testcase-design/tools/manifest.py validate output/【<模块>】/<需求编号>-<需求名称>
+  python -B skills/testcase-design/tools/manifest.py directory-name <需求编号> "<需求名称>" --module-id <module> --module-name "<moduleName>"
+  python -B skills/testcase-design/tools/manifest.py inspect output/<module_directory_name>/<需求编号>-<需求名称>
+  python -B skills/testcase-design/tools/manifest.py ids output/<module_directory_name>/<需求编号>-<需求名称> <需求编号> --count 3 --baseline-manifest output/<module_directory_name>/<需求编号>-<需求名称>/versions/<最新版本>/manifest.json
+  python -B skills/testcase-design/tools/manifest.py validate output/<module_directory_name>/<需求编号>-<需求名称>
   ```
 
 - `inspect` 每次调用只加载一次历史 Manifest，并核对全部历史有效用例指纹；相同 Markdown 路径只解析一次。`publish` 在需求级操作系统锁内只加载一次历史 Manifest，并复用已读取记录进行版本分配及发布后链路检查；`validate` 每次调用只加载一次历史 Manifest。上述复用只消除同一操作内重复扫描，不减少规定的历史指纹、来源链、身份连续性和全历史 SHA 校验。历史文件损坏、来源未登记或快照不一致时明确 FAIL，不自动修复、不覆盖历史。
@@ -194,7 +195,12 @@ Manifest 是需求级正式版本账本和当前有效产物清单，不保存�
 
 ```json
 {
-  "requirement": {"id": "<需求编号>", "name": "<需求名称>"},
+  "requirement": {
+    "id": "<需求编号>",
+    "name": "<需求名称>",
+    "module_id": "<禅道 module>",
+    "module_name": "<禅道 moduleName>"
+  },
   "expected_base_version": null,
   "delivery_status": "complete",
   "artifacts": [

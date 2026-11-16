@@ -98,23 +98,26 @@ def requirement_directory_name(requirement_id: str, requirement_name: str) -> st
     return f"{requirement_id}-{safe_name}"
 
 
-def module_directory_name(requirement_name: str) -> str:
-    """Return the first full-width bracket module, preserving its brackets."""
-    name = _nonempty(requirement_name, "requirement.name")
-    match = re.search(r"【([^】]+)】", name)
-    module_label = match.group(1).strip() if match else ""
-    module = f"【{module_label}】" if module_label else "【未分类】"
-    safe_name = WINDOWS_INVALID_CHARS.sub("_", module).rstrip(" .")
+def module_directory_name(module_name: str) -> str:
+    """Return a Windows-safe directory component derived only from ZenTao moduleName."""
+    name = _nonempty(module_name, "requirement.module_name")
+    safe_name = WINDOWS_INVALID_CHARS.sub("_", name).rstrip(" .")
     safe_name = re.sub(r"_+", "_", safe_name).strip(" ._")
-    if not safe_name or WINDOWS_RESERVED_COMPONENT.fullmatch(safe_name):
-        return "【未分类】"
-    return safe_name
+    _require(bool(safe_name), "requirement.module_name 清理后为空，拒绝创建需求归档目录")
+    _require(
+        safe_name not in {".", ".."}
+        and WINDOWS_RESERVED_COMPONENT.fullmatch(safe_name) is None,
+        "requirement.module_name 清理后是 Windows 保留目录名，拒绝创建需求归档目录",
+    )
+    return f"【{safe_name}】"
 
 
-def requirement_archive_relative_path(requirement_id: str, requirement_name: str) -> str:
-    """Return module/requirement while keeping the full original bracketed requirement name."""
+def requirement_archive_relative_path(
+    requirement_id: str, requirement_name: str, module_name: str
+) -> str:
+    """Return the ZenTao-module/requirement path; never infer module from the title."""
     return (
-        f"{module_directory_name(requirement_name)}/"
+        f"{module_directory_name(module_name)}/"
         f"{requirement_directory_name(requirement_id, requirement_name)}"
     )
 
@@ -197,6 +200,18 @@ def validate_manifest(data: object, requirement_id: str | None = None) -> dict:
     req_id = _nonempty(req.get("id"), "requirement.id")
     _require(re.fullmatch(r"\d+", req_id) is not None, "requirement.id 必须为数字字符串")
     _nonempty(req.get("name"), "requirement.name")
+    module_id = req.get("module_id")
+    module_name = req.get("module_name")
+    _require(
+        (module_id is None and module_name is None)
+        or (module_id is not None and module_name is not None),
+        "Manifest requirement.module_id 与 module_name 必须同时存在",
+    )
+    if module_id is not None:
+        module_id = _nonempty(str(module_id), "requirement.module_id")
+        _require(re.fullmatch(r"\d+", module_id) is not None, "requirement.module_id 必须为数字")
+        module_name = _nonempty(module_name, "requirement.module_name")
+        module_directory_name(module_name)
     if requirement_id is not None:
         _require(req_id == requirement_id, "Manifest 需求编号与目录不一致")
 
@@ -1083,6 +1098,124 @@ def _effective_artifact_path(
     return requirement_root.joinpath(*parts)
 
 
+def _resolve_publish_module_metadata(
+    requirement_root: Path,
+    requirement_id: str,
+    requirement_name: str,
+    previous_requirement: dict,
+    has_history: bool,
+    module_id: str | int | None,
+    module_name: str | None,
+    require_module_metadata: bool = True,
+) -> tuple[str | None, str | None]:
+    """Resolve frozen module identity and enforce the first-archive path contract."""
+    supplied_module_id = None
+    supplied_module_name = None
+    if module_id is not None or module_name is not None:
+        _require(
+            module_id is not None and module_name is not None,
+            "module_id 与 module_name 必须同时提供",
+        )
+        supplied_module_id = _nonempty(str(module_id), "requirement.module_id")
+        _require(
+            re.fullmatch(r"\d+", supplied_module_id) is not None,
+            "requirement.module_id 必须为数字",
+        )
+        supplied_module_name = _nonempty(module_name, "requirement.module_name")
+        module_directory_name(supplied_module_name)
+
+    frozen_module_id = previous_requirement.get("module_id")
+    frozen_module_name = previous_requirement.get("module_name")
+    _require(
+        (frozen_module_id is None and frozen_module_name is None)
+        or (frozen_module_id is not None and frozen_module_name is not None),
+        "历史 Manifest 的模块元数据不完整，拒绝继续发布",
+    )
+    if frozen_module_id is not None:
+        frozen_module_id = _nonempty(str(frozen_module_id), "历史 requirement.module_id")
+        _require(
+            re.fullmatch(r"\d+", frozen_module_id) is not None,
+            "历史 requirement.module_id 必须为数字",
+        )
+        frozen_module_name = _nonempty(frozen_module_name, "历史 requirement.module_name")
+        module_directory_name(frozen_module_name)
+        if supplied_module_id is not None:
+            _require(
+                supplied_module_id == frozen_module_id
+                and supplied_module_name == frozen_module_name,
+                "禅道当前模块与历史 Manifest 冻结模块不一致；停止发布并核对模块变更",
+            )
+        module_id_for_manifest = frozen_module_id
+        module_name_for_manifest = frozen_module_name
+    else:
+        module_id_for_manifest = supplied_module_id
+        module_name_for_manifest = supplied_module_name
+
+    if require_module_metadata:
+        _require(
+            module_id_for_manifest is not None and module_name_for_manifest is not None,
+            "首次需求归档或历史 Manifest 缺少模块元数据，必须先通过禅道 getNeedDetailById 获取 module/moduleName",
+        )
+        if not has_history:
+            expected_module_directory = module_directory_name(module_name_for_manifest)
+            expected_requirement_directory = requirement_directory_name(
+                requirement_id, requirement_name
+            )
+            root = Path(requirement_root)
+            _require(
+                root.name == expected_requirement_directory
+                and root.parent.name == expected_module_directory,
+                "首次需求归档根目录必须匹配禅道 moduleName 与需求标题生成的 archive_relative_path",
+            )
+
+    return module_id_for_manifest, module_name_for_manifest
+
+
+def _preflight_publish_module_metadata(
+    requirement_root: Path,
+    requirement_id: str,
+    requirement_name: str,
+    module_id: str | int | None,
+    module_name: str | None,
+) -> None:
+    """Reject missing module identity or a wrong first-archive path before lock creation."""
+    _require(
+        isinstance(requirement_id, str) and re.fullmatch(r"\d+", requirement_id) is not None,
+        "需求编号必须为数字字符串",
+    )
+    _nonempty(requirement_name, "requirement.name")
+    root = Path(requirement_root)
+    version_ids = _version_directory_ids(root)
+    previous_requirement = {}
+    if version_ids:
+        latest_version = max(version_ids, key=_version_parts)
+        manifest_path = _manifest_path_for_version(root, latest_version)
+        try:
+            latest_manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            raise ManifestError(f"无法读取最新版本 Manifest：{manifest_path}") from exc
+        validate_manifest(latest_manifest, requirement_id)
+        _require(
+            latest_manifest["version_id"] == latest_version,
+            "最新 Manifest version_id 与目录名不一致",
+        )
+        previous_requirement = latest_manifest["requirement"]
+        _require(
+            previous_requirement["name"] == requirement_name,
+            "历史 Manifest 的需求名称与本次输入不一致",
+        )
+    _resolve_publish_module_metadata(
+        root,
+        requirement_id,
+        requirement_name,
+        previous_requirement,
+        bool(version_ids),
+        module_id,
+        module_name,
+        require_module_metadata=True,
+    )
+
+
 def _publish_version_locked(
     requirement_root: Path,
     requirement_id: str,
@@ -1094,6 +1227,9 @@ def _publish_version_locked(
     retire_artifacts=(),
     created_at: str | None = None,
     expected_base_version: str | None = None,
+    module_id: str | int | None = None,
+    module_name: str | None = None,
+    allow_legacy_test_fixture: bool = False,
 ) -> dict:
     """Publish one immutable requirement version from staged files.
 
@@ -1139,15 +1275,28 @@ def _publish_version_locked(
         verify_history_case_snapshots(root, history_records)
     previous_record = history_records[-1] if history_records else None
     previous = previous_record["manifest"] if previous_record else None
+    previous_requirement = previous["requirement"] if previous is not None else {}
     if previous is not None:
         _require(
-            previous["requirement"]["id"] == requirement_id,
+            previous_requirement["id"] == requirement_id,
             "历史 Manifest 与当前需求编号不一致",
         )
         _require(
-            previous["requirement"]["name"] == requirement_name,
+            previous_requirement["name"] == requirement_name,
             "历史 Manifest 的需求名称与本次输入不一致",
         )
+
+    module_id_for_manifest, module_name_for_manifest = _resolve_publish_module_metadata(
+        root,
+        requirement_id,
+        requirement_name,
+        previous_requirement,
+        bool(history_records),
+        module_id,
+        module_name,
+        require_module_metadata=not allow_legacy_test_fixture,
+    )
+
     history_ids = {
         item["case_id"]
         for record in history_records
@@ -1364,9 +1513,13 @@ def _publish_version_locked(
                         case_snapshot.append(item)
                 generated_changes = None
 
+        requirement_data = {"id": requirement_id, "name": requirement_name}
+        if module_id_for_manifest is not None and module_name_for_manifest is not None:
+            requirement_data["module_id"] = module_id_for_manifest
+            requirement_data["module_name"] = module_name_for_manifest
         manifest_data = {
             "schema_version": SCHEMA_VERSION,
-            "requirement": {"id": requirement_id, "name": requirement_name},
+            "requirement": requirement_data,
             "version_id": version_id,
             "created_at": created,
             "delivery_status": delivery_status,
@@ -1788,8 +1941,17 @@ def publish_version(
     retire_artifacts=(),
     created_at: str | None = None,
     expected_base_version: str | None = None,
+    module_id: str | int | None = None,
+    module_name: str | None = None,
 ) -> dict:
-    """Publish only if the caller's baseline is still current under the requirement lock."""
+    """Publish with strict module validation before creating a requirement lock."""
+    _preflight_publish_module_metadata(
+        requirement_root,
+        requirement_id,
+        requirement_name,
+        module_id,
+        module_name,
+    )
     with _requirement_publish_lock(requirement_root):
         return _publish_version_locked(
             requirement_root,
@@ -1802,6 +1964,8 @@ def publish_version(
             retire_artifacts,
             created_at,
             expected_base_version,
+            module_id,
+            module_name,
         )
 
 
@@ -1827,6 +1991,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     name_parser.add_argument("requirement_id")
     name_parser.add_argument("requirement_name")
+    name_parser.add_argument("--module-id", required=True)
+    name_parser.add_argument("--module-name", required=True)
 
     inspect_parser = sub.add_parser("inspect", help="Inspect the latest formal baseline")
     inspect_parser.add_argument("requirement_root", type=Path)
@@ -1853,14 +2019,21 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.command == "directory-name":
+            module_id = _nonempty(str(args.module_id), "requirement.module_id")
+            _require(
+                re.fullmatch(r"\d+", module_id) is not None,
+                "requirement.module_id 必须为数字",
+            )
             _json_output({
                 "result": "DIRECTORY_NAME_READY",
                 "directory_name": requirement_directory_name(
                     args.requirement_id, args.requirement_name
                 ),
-                "module_name": module_directory_name(args.requirement_name),
+                "module_id": module_id,
+                "module_name": _nonempty(args.module_name, "requirement.module_name"),
+                "module_directory_name": module_directory_name(args.module_name),
                 "archive_relative_path": requirement_archive_relative_path(
-                    args.requirement_id, args.requirement_name
+                    args.requirement_id, args.requirement_name, args.module_name
                 ),
             })
             return 0
@@ -1889,6 +2062,8 @@ def main(argv: list[str] | None = None) -> int:
                 spec.get("retire_artifacts", []),
                 spec.get("created_at"),
                 spec["expected_base_version"],
+                module_id=req.get("module_id"),
+                module_name=req.get("module_name"),
             )
             data = result["manifest"]
             _json_output({

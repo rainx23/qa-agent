@@ -6,7 +6,13 @@
 
 ## 未发布（Unreleased）
 
-（当前无待归档条目）
+### Output 真实模块外层增加【】；历史迁移 PARTIAL
+
+- 归档目录一级分类使用禅道 `getNeedDetailById` 返回的真实 `moduleName`，并加 `【】`（如 `【销售结果】`），二级需求目录保留完整原始标题。P1/P2/P3/P5 及需求关联 Bug 使用统一路径规则；Codex 二轮独立验收 **OVERALL PASS**，先前规则版本首轮三项 NEED_FIX 均关闭；本轮括号命名变更尚待独立验收。P1 **173/173**、P2 **21/21**、P3 **23/23**、P5 **76 PASS/1 SKIP**，规则工程验收完成。
+- 历史迁移已根据禅道真实模块完成 **19/20** 个需求目录；本轮将对应6个模块目录统一改为 `【真实模块名】`，351/351文件 SHA-256 一致、76/76版本完整、20/20 Manifest validate PASS；20条 `legacy-path-map.json` 映射按实际目录更新，保留早期路径及过渡目录映射。
+- 本轮带括号目录规则修改后的完整回归：P1 173/173、P2 21/21、P3 23/23、P5 76 PASS/1 SKIP，`git diff --check` PASS。历史内容不改写；新增命名版本的 Codex 独立验收仍 PENDING。
+- **未完成项**：需求 `585458` 再次尝试移动到 `output/【销售结果】/`，Windows 仍反复返回 `WinError 5`，保留在 `output/【销售统计】/`，未复制或删除；全局标记 `PARTIAL_19_OF_20`，未声称20/20迁移 PASS。解除占用后续迁，移除最后旧分类目录并再做独立验收。
+- 未改写历史 Manifest/SQL/XMind/Markdown 正文，未修改项目级 `output/api-automation/` 或 `output/impact-analysis/`，未 Commit/Push。
 
 ## 2026-11-16
 

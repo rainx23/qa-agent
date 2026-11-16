@@ -5,7 +5,7 @@
 ## 输出、索引与历史资产维护
 
 - 对话交付信息按本次任务类型与实际范围选择；相关证据由对应任务提供。不得把设计完成、保存成功、Debug 成功和正式 Run PASS 混为一谈。简要结论优先，详细证据按需提供。
-- **需求绑定型正式产物**沿用 `output/【<模块>】/<需求编号>-<需求名称>/api-automation/<YYYYMMDD>-vN/`，Manifest 位于需求根目录 `versions/<YYYYMMDD>-vN/manifest.json`，与 P1/P2/P3 共用需求级版本序列；不另建接口自动化版本账本。模块目录名保留需求标题中第一个非空全角 `【...】` 标识（包括括号）；没有标识时使用 `【未分类】`。需求目录保留完整标题和括号。P1 的 Markdown+XMind 展示规范不机械套用于 ZeroRunner Case/执行报告。
+- **需求绑定型正式产物**沿用 `output/【<禅道moduleName>】/<需求编号>-<完整需求标题>/api-automation/<YYYYMMDD>-vN/`，Manifest 位于需求根目录 `versions/<YYYYMMDD-vN>/manifest.json`，与 P1/P2/P3 共用需求级版本序列；不另建接口自动化版本账本。一级模块目录按 `skills/testcase-design/references/output-archive.md` 使用禅道真实 `moduleName`，不从标题括号推断。新需求首次归档前核对禅道需求 ID、模块 ID/名称；已有需求先定位现存根目录并沿用 Manifest 冻结模块元数据。需求目录保留完整标题和括号。P1 的 Markdown+XMind 展示规范不机械套用于 ZeroRunner Case/执行报告。
 - **项目级接口覆盖索引**统一保存在 `output/api-automation/index.json`，每接口独立维护于 `output/api-automation/interfaces/<API Code>.json`。这两类 JSON 是当前有效基线，不放在 `skills/api-autotesting/`，也不按每次执行创建快照。
 - **需求关联的可读分析/设计产物**放在对应需求根目录的 `api-automation/<YYYYMMDD>-vN/`，并在 `versions/<YYYYMMDD>-vN/manifest.json` 中登记 `category: api-automation`；项目级索引仅关联需求产物、源码 SHA、Case/Report 等必要身份，不复制完整内容。
 - 不复制完整源码、Git 历史、P3 完整分析产物、ZeroRunner 请求响应、Step 日志或完整平台报告；这些内容分别由源码仓库、既有需求产物或 ZeroRunner 平台保存。Markdown 用于可读分析/设计依据，JSON 用于轻量索引。

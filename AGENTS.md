@@ -56,7 +56,7 @@ P1 testcase-design 既有路由规则保持如下：
 - **P3 `sql-design`**：
   - **独立需求 SQL**：用户在任何阶段明确要求“编写/生成/设计某需求 SQL”或“补充/修改已有需求 SQL”时，直接触发 P3，不要求已提测，也不依赖 P2。需求级编写默认完成场景清单、数据场景 F+V 及 SQL-only 正式归档；明确要求“讨论/评估/预览/草稿”时仅保存 `.qa-work/`，不发布。
   - **P1 基线复用**：优先定位该需求最新有效 Manifest；存在 P1 正式 `testcases.md`/`oracle.json` 时核对 SHA 并复用相关场景、Case ID 和 Oracle，不重复获取需求正文或重跑 P1。P1 缺失/信息不足时只补充缺失事实，不自动启动 P1/P2。
-  - **正式归档**：独立需求 SQL 默认通过现有 SQL-only Manifest 流程发布至 `output/【<模块>】/<需求编号>-<需求名称>/sql/<YYYYMMDD>-vN/`，需求级 Manifest 位于 `versions/<YYYYMMDD>-vN/manifest.json`；模块目录保留需求标题第一个全角 `【...】` 标识（含括号；无标识时使用 `【未分类】`），需求目录保留完整原始标题。实质补充/修改走共享需求版本序列增量发布，无内容变化不创建版本。P1/P2 既有产物沿 Manifest 继承，不覆盖。
+  - **正式归档**：独立需求 SQL 默认通过现有 SQL-only Manifest 流程发布至 `output/【<禅道 moduleName>】/<需求编号>-<完整需求标题>/sql/<YYYYMMDD>-vN/`，需求级 Manifest 位于 `versions/<YYYYMMDD-vN>/manifest.json`。一级目录必须来自禅道需求详情的真实 `moduleName`，首次归档前按 `skills/testcase-design/references/output-archive.md` 获取并校验模块 ID/名称；标题中的 `【】` 不参与模块分组。实质补充/修改走共享需求版本序列增量发布，无内容变化不创建版本。P1/P2 既有产物沿 Manifest 继承，不覆盖。
   - **P2 调用边界不变**：P2 `submission-impact.md` 调用 P3 时仍将 SQL 写入绑定 P2 基线的 `.qa-work/.../verification-details.md`，首次聊天不展示 SQL 正文，不创建 P3 SQL-only 正式版本；其他 P2 工作流不因本规则扩展。SQL 只读且由用户手动执行。
 
 - **P4 `knowledge-management`**：用户查询知识或 P1/P2/P3 确有帮助时按需只读检索；只有用户明确要求建立/更新指定模块知识，或明确批准 P1 报告中指定知识候选入库时，才读取 `skills/knowledge-management/SKILL.md` 及其 `references/knowledge-update.md`，在获准范围内复核去重并安全增量写入。

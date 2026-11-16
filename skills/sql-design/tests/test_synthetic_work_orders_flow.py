@@ -137,7 +137,7 @@ class SyntheticWorkOrdersTests(unittest.TestCase):
         self.assertIn("sql_dialect:", file_header)
 
         with tempfile.TemporaryDirectory(prefix="p3-synthetic-e2e-") as tmp:
-            root = Path(tmp) / "996004-P3-synthetic"
+            root = Path(tmp) / "【P3 Synthetic 模拟模块】" / "996004-P3-synthetic"
             staging = Path(tmp) / "staging"
             staging.mkdir()
             md = DESIGN_FILE.read_text(encoding="utf-8")
@@ -163,7 +163,8 @@ class SyntheticWorkOrdersTests(unittest.TestCase):
             now = datetime.now(timezone(timedelta(hours=8))).replace(microsecond=0)
             first = manifest.publish_version(
                 root, "996004", "P3-synthetic", items,
-                created_at=now.isoformat(), expected_base_version=None)
+                created_at=now.isoformat(), expected_base_version=None,
+                module_id="225", module_name="P3 Synthetic 模拟模块")
             self.assertEqual(first["version_id"], now.strftime("%Y%m%d") + "-v1")
             self.assertEqual(first["manifest"]["schema_version"], "1")
             self.assertEqual(first["manifest"]["case_snapshot"], [])

@@ -374,7 +374,7 @@ EV 证据至少记录：
 - 只读取、解释或引用已有分析结果不创建新版本；继续同一轮尚未发布的分析只更新临时草稿。新一轮提测或明确要求的独立分析即使代码未变化，也必须形成新的正式 P2 版本。
 ### 需求级归档与 Manifest
 
-有明确需求编号时，统一使用 output/【<模块>】/<需求编号>-<需求名称>/ 需求级归档根目录和 P1/P2/P3 共用的 YYYYMMDD-vN 版本序列。模块目录名保留需求标题中第一个非空全角【...】标识（包括括号）；没有标识时使用【未分类】。需求目录保留完整原始标题（包括【】）。P2 不再归档到 P1 基线目录内原位更新，也不建立 Agent 专属目录或独立版本账本。
+有明确需求编号时，统一使用 `output/【<禅道 moduleName>】/<需求编号>-<完整需求标题>/` 作为需求级归档根目录，P1/P2/P3/P5 共用 `YYYYMMDD-vN` 版本序列。一级模块名按 `skills/testcase-design/references/output-archive.md` 从禅道需求详情 `moduleName` 获取；不得从需求标题括号推断，也不得回退到未分类目录。需求目录保留完整原始标题（包括 `【】`）。已有需求先定位现存根目录并沿用 Manifest 冻结模块元数据；P2 不再归档到 P1 基线目录内原位更新，也不建立 Agent 专属目录或独立版本账本。
 
 版本定位必须区分两个概念：
 - **最新整体版本**：manifest.py inspect 返回的最新 latest_version，它决定本次发布的 expected_base_version；可能是 P1、P2 或 P3 创建的版本。
@@ -383,7 +383,7 @@ EV 证据至少记录：
 正式 P2 产物结构：
 
 ```text
-output/【<模块>】/<需求编号>-<需求名称>/
+output/【<禅道moduleName>】/<需求编号>-<完整需求标题>/
 ├── versions/<YYYYMMDD-vN>/manifest.json
 └── analysis/<YYYYMMDD-vN>/
     ├── impact-analysis.md

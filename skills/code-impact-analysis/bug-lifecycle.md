@@ -133,7 +133,7 @@
 ## 交付与归档
 
 每个 Bug 使用独立归档目录，避免与同一需求的提测分析报告、创建回执或其他 Bug 报告冲突：
-`output/【<模块>】/<需求编号>-<需求名称>/analysis/bug-lifecycle/BUG-<BugID>/`（有需求编号时，独立于 `analysis/<YYYYMMDD-vN>/` 和 P1 正式用例版本）
+`output/【<禅道moduleName>】/<需求编号>-<完整需求标题>/analysis/bug-lifecycle/BUG-<BugID>/`（有需求编号时，先按 `skills/testcase-design/references/output-archive.md` 定位现存需求根目录；模块来源使用禅道 `moduleName`/Manifest 冻结值，不从需求标题推断；该目录独立于 `analysis/<YYYYMMDD-vN>/` 和 P1 正式用例版本）
 
 每个 Bug 目录按实际内容创建：
 - `impact-analysis.md`：该 Bug 的修复影响分析、直接/间接影响、回归范围、AI 验证结果及证据；每次同一 Bug 后续回归只更新本目录内文件。

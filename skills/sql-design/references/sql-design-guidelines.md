@@ -152,13 +152,13 @@
 - 独立 P3 验证过程保存在 `.qa-work/<需求编号>-<需求名称>/sql-design/manual-verification.md`，绑定当前 P3 Manifest 与 SQL artifact SHA；不新增 JSON/数据库账本，不自动修改正式 SQL 或发布验证结果版本。用户明确要求正式归档时，先核实 Manifest 是否支持，不绕过现有协议。
 ## SQL-only Manifest 正式发布与增量
 
-1. **定位归档基线**：需求目录沿用 `output/【<模块>】/<需求编号>-<需求名称>/`；必要时先用 `python -B skills/testcase-design/tools/manifest.py directory-name <需求编号> <需求名称>` 获取 `archive_relative_path`，再拼接为 `output/<archive_relative_path>`。需求名称完整保留 `【模块】`。先执行 `python -B skills/testcase-design/tools/manifest.py inspect <需求目录>`；`MANIFEST_BASELINE_READY` 表示基线已准备，使用返回的 `latest_version`；`NO_HISTORY` 表示首次发布，基线为 JSON `null`。其他结果停止并核查，绝不跳过历史验证。
+1. **定位归档基线**：按 `skills/testcase-design/references/output-archive.md` 定位需求根目录。新需求先用禅道 `getNeedDetailById({id})` 校验 `module/moduleName`，再运行 `manifest.py directory-name <需求编号> <需求名称> --module-id <module> --module-name "<moduleName>"`；已有需求先沿用现存根目录/legacy locator，读取 Manifest 中冻结的模块元数据，不得因新模块路径尚不存在而另建根目录。随后执行 `manifest.py inspect <需求目录>`；`MANIFEST_BASELINE_READY` 使用返回的 `latest_version`，`NO_HISTORY` 表示首次发布、基线为 JSON `null`。其他结果停止并核查，绝不跳过历史验证。
 2. **准备正式输入**：AI 先核查产品 Oracle、数据来源、实际过滤、SQL 可读性及未决，保存本次新增/变化文件于 `.qa-work/`。需求级独立 SQL 应包含 `scenario-coverage.md`（若内容未变化则沿用历史 role）及本次新增/变化 SQL；发布前核对关联用例与产品 Oracle 正文、有效业务过滤、指标来源字段与对象粒度、跨 JOIN/分层聚合的一对多放大风险、独立对账的真实比较路径、每段 CTE/参数及最终输出字段注释。直接影响必要验证目标、导致无法正确设计的缺证标 `BLOCKED`；只有部分业务断言已验证、部分未覆盖时标 `PARTIAL`。已有可靠验证内容仍可部分交付，不因非关键缺证阻断。每份文件使用固定唯一 `role`（场景清单固定 `scenario-coverage`；SQL 默认 `sql-design`，只有确实拆分时才使用多个有明确职责的 role），`source_path` 指向真实暂存文件、`path` 为 `sql/` 下正式相对路径；不创建空目录或复制未变化文件。
 3. **生成 publish spec**：使用 P1 现有 `publish-spec.json` 协议，包含真实 `requirement.id` 和 `name`、`expected_base_version`、`delivery_status`、`artifacts`。其中 `expected_base_version` 首次为 JSON `null`，增量使用从 inspect 得到的 `YYYYMMDD-vN` 字符串；`delivery_status` 按真实本次交付范围决定 `complete` 或 `partial`，不代表业务正确性 PASS。SQL-only 时**省略整个 `case_changes` 字段**（空列表也会被现有发布器识别为用例变更并拒绝发布）；没有真正 P1 用例变更时也不传 `lineage`、testcases 的 `retire_artifacts`。最小结构如下（所有占位符需以真实信息替换）：
 
    ```json
    {
-     "requirement": {"id": "需求编号", "name": "需求名称"},
+     "requirement": {"id": "需求编号", "name": "需求名称", "module_id": "禅道 module", "module_name": "禅道 moduleName"},
      "expected_base_version": null,
      "delivery_status": "complete",
      "artifacts": [

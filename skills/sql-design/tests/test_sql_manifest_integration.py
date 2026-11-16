@@ -18,7 +18,7 @@ class SqlOnlyManifestContractTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory(prefix="p3-sql-manifest-")
         self.addCleanup(self.temp.cleanup)
         self.base = Path(self.temp.name)
-        self.root = self.base / "996003-P3-SQL"
+        self.root = self.base / "【P3 SQL 模拟模块】" / "996003-P3-SQL"
         self.source = self.base / "sources"
         self.source.mkdir()
         self.spec = self.base / "publish-spec.json"
@@ -37,7 +37,10 @@ class SqlOnlyManifestContractTests(unittest.TestCase):
 
     def publish(self, files, base_version=None, case_changes_missing=True):
         payload = {
-            "requirement": {"id": "996003", "name": "P3-SQL"},
+            "requirement": {
+                "id": "996003", "name": "P3-SQL",
+                "module_id": "225", "module_name": "P3 SQL 模拟模块",
+            },
             "expected_base_version": base_version,
             "delivery_status": "complete",
             "artifacts": [
@@ -176,7 +179,10 @@ class SqlOnlyManifestContractTests(unittest.TestCase):
     def test_path_traversal_rejected(self):
         source = self.write_query("sql-design.sql", "select 1;\n")
         payload = {
-            "requirement": {"id": "996003", "name": "P3-SQL"},
+            "requirement": {
+                "id": "996003", "name": "P3-SQL",
+                "module_id": "225", "module_name": "P3 SQL 模拟模块",
+            },
             "expected_base_version": None,
             "delivery_status": "complete",
             "artifacts": [{"category": "sql", "role": "sql-design",

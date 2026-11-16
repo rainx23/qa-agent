@@ -67,7 +67,7 @@ createBug 必须关联需求，story 为必填整数。当前 MCP Schema 不支�
 - module：模块 ID。
 - project：迭代 ID。
 
-预览中同时展示产品、模块和迭代名称及 ID（返回名称时）。不得使用其他需求的历史值、硬编码 ID 或凭页面名称猜测。
+预览中同时展示产品、模块和迭代名称及 ID（返回名称时）。不得使用其他需求的历史值、硬编码 ID 或凭页面名称猜测。需求归档根目录按 `skills/testcase-design/references/output-archive.md` 定位：优先沿用当前需求已有 Manifest/legacy locator；已有 Manifest 冻结的 `module_id/module_name` 不因本次禅道详情变化而自动移动目录，发现不一致时停止并报告。只有首次建立需求归档或历史 Manifest 缺少模块元数据时，才使用本次真实 `module/moduleName` 建立/补齐模块元数据。
 
 若查询失败、返回不完整，或 product/module/project 任一必填 ID 缺失，停止提交并说明缺失字段；不得猜测或回退到其他需求的缓存值。需求正文/业务预期不在返回内容中时，继续使用当前任务已提供的需求正文或权威业务材料；不能把需求元数据查询冒充为已取得完整需求正文。
 

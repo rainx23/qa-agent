@@ -322,7 +322,7 @@ MCP 调用失败、超时或返回不完整时：
 ### 归档与版本
 
 BUG 根因排查按照本节独立任务归档规则执行；不套用开发提测分析的旧版原位归档方式或版本策略，分析工作流间各自保持已定义的范围与归档边界。
-- 有明确需求编号时，归档到 `output/【<模块>】/<需求编号>-<需求名称>/analysis/<YYYYMMDD>-vN/`；Manifest 位于该需求根目录的 `versions/<YYYYMMDD>-vN/manifest.json`。模块目录名保留需求标题中第一个非空全角 `【...】` 标识（包括括号）；没有标识时使用 `【未分类】`。需求目录保留完整原始标题，沿用该需求统一版本序列，不覆盖或修改 P1 正式用例及历史记录。
+- 有明确需求编号时，归档到 `output/【<禅道moduleName>】/<需求编号>-<完整需求标题>/analysis/<YYYYMMDD>-vN/`；Manifest 位于该需求根目录的 `versions/<YYYYMMDD-vN>/manifest.json`。一级模块目录按 `skills/testcase-design/references/output-archive.md` 使用禅道真实 `moduleName`，不得从标题括号推断。已有需求先定位现存根目录并沿用 Manifest 冻结模块元数据；需求目录保留完整原始标题，沿用该需求统一版本序列，不覆盖或修改 P1 正式用例及历史记录。
 - 没有需求编号时，归档到 `output/impact-analysis/BUG-<主题>-<YYYYMMDD>/vN/`。
 - 每个正式版本默认保存完整 impact-analysis.md；仅存在符合条件的人工核对事项时，同时保存 manual-verification.md。
 - 无需求编号时，同一 BUG 分析任务的后续正式更新递增原任务目录下的 vN；新的独立 BUG 任务新建日期目录并从 v1 开始。有需求编号时，后续正式更新仍沿用需求级 YYYYMMDD-vN 序列，不另建 BUG 版本序列。

@@ -51,7 +51,7 @@ description: 根据需求场景与 P1 正式基线独立设计找数/验数 SQL�
 
 ## SQL-only 正式归档（独立需求 SQL 默认发布）
 - **默认发布触发**：用户明确要求“编写/生成/设计某需求 SQL”或“补充/修改已有需求 SQL”时，默认按独立 P3 正式交付执行 SQL-only Manifest 发布；不要求用户再补一句“正式归档”。“讨论/评估/预览/草稿”只保留 `.qa-work/` 工作稿，不发布。用户明确要求单独 F-only/V-only 时遵从其收窄范围，不强制扩大成需求级全场景交付。
-- **正式目录与暂存职责**：正式产物进入 `output/【<模块>】/<需求编号>-<需求名称>/sql/<YYYYMMDD>-vN/`；需求 Manifest 位于同一需求根目录的 `versions/<YYYYMMDD>-vN/manifest.json`；`.qa-work/` 仅用于草稿、场景清单、SQL 修改和 publish spec 暂存，不作为最终交付目录。需求级场景清单使用 `scenario-coverage.md`（`category: sql`、稳定 `role: scenario-coverage`），SQL 文件按复杂度采用 `sql-design.sql` 或多个独立 `.sql` 文件。
+- **正式目录与暂存职责**：正式产物进入 `output/【<禅道moduleName>】/<需求编号>-<完整需求标题>/sql/<YYYYMMDD>-vN/`；需求 Manifest 位于同一需求根目录的 `versions/<YYYYMMDD-vN>/manifest.json`；一级模块目录来源、首次查询、元数据冻结及旧需求定位统一遵循 `skills/testcase-design/references/output-archive.md`，不得从标题括号推断。`.qa-work/` 仅用于草稿、场景清单、SQL 修改和 publish spec 暂存，不作为最终交付目录。需求级场景清单使用 `scenario-coverage.md`（`category: sql`、稳定 `role: scenario-coverage`），SQL 文件按复杂度采用 `sql-design.sql` 或多个独立 `.sql` 文件。
 - **必经流程**：按 `references/sql-design-guidelines.md` 的「SQL-only Manifest 正式发布与增量」章节，执行 `inspect → publish → validate`；SQL-only 发布必须提供正确 `expected_base_version`，只提交 `category: sql` 且每份 SQL 使用稳定唯一的 `role`。**不要传 `case_changes`，即使它包含空的数组也不行**；不能以 SQL 发布动作改变 P1 Case ID、Revision、Oracle 或用例身份快照。
 - **增量和历史**：同一个 SQL role 的内容变化形成新版引用；其他 SQL role、P1/P2 产物继承历史 source_version 和 SHA，不复制、不删除。新的 role 不代表替换旧的 role，明确废弃时须有业务依据并单独审查。相同内容不能人为制造正式新版本；发布成功后验签失败时先核查已存在版本，不盲目再发布。
 - **可用性边界**：P1 `manifest.py` 已恢复为可维护源码；本 Skill 复用统一 Manifest 工具，不自建 SQL-only 发布器。每次正式发布必须以当前环境实际 `inspect → publish → validate` 的退出码和回执判断；工具不可用或校验失败时报告 `PUBLISH_UNAVAILABLE`，不得绕过历史保护。

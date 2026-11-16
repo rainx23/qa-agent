@@ -134,7 +134,7 @@ P4 候选为聊天报告的可选建议内容，不是正式用例产物或测�
 
 ### 增量任务启动
 
-1. 先运行 `manifest.py directory-name <需求编号> <需求名称>`，获取 `module_name` 和 `archive_relative_path`；需求根目录为 `output/<archive_relative_path>`，需求目录名称完整保留原始 `【模块】` 前缀。再运行一次 `manifest.py inspect`。记录其返回的 `manifest_path`、`markdown_path` 和 `latest_version`；该 `latest_version` 必须原样写入本次 publish spec 的 `expected_base_version`。`NO_HISTORY` 表示首次交付，`expected_base_version` 显式填写 `null`。
+1. 先按 `references/output-archive.md` 判断新需求或已有需求：新需求先调用禅道 `getNeedDetailById({id})` 校验 `data.id/module/moduleName`，再运行 `manifest.py directory-name <需求编号> <需求名称> --module-id <module> --module-name "<moduleName>"`，使用返回的 `archive_relative_path`；已有需求先定位现存根目录并读取最新 Manifest 的冻结模块元数据，不得按当前标题另建目录。新需求首次发布 spec 的 `requirement` 必须包含 `module_id`、`module_name`；历史 Manifest 缺少模块元数据时，查询一次禅道详情并在本次发布补齐。随后运行 `manifest.py inspect`，记录 `manifest_path`、`markdown_path`、`latest_version`，并将 `latest_version` 原样写入 `expected_base_version`。`NO_HISTORY` 表示首次交付，`expected_base_version` 显式填写 `null`。
 2. 对已有需求，使用一次批量文件读取同时读取最新有效 `manifest.json` 和 `markdown_path` 指向的当前有效 `testcases.md`。最新 Manifest 的 `case_snapshot` 是完整历史身份账本，包含有效及退役 Case ID；不得为收集身份而逐个读取旧 Manifest、旧 Markdown 或拆分读取每条用例。只有遇到明确的来源追溯/拆分合并疑点或验签失败，才定向读取对应历史版本。
 3. `inspect` 失败时停止并定位，不从空集合重建。`inspect` 会检查全部历史有效用例指纹及退役快照连续性；相同权威 Markdown 路径只解析一次，并检查最新有效产物 SHA。它不代替全历史文件 SHA 验签。正常增量设计不额外先运行一次全历史 `validate`：`manifest.py publish` 在正式提交前会完整核验全部历史文件 SHA-256、来源追溯、历史快照和身份连续性；发布后仍必须执行最终 `validate`。
 4. AI 对本次需求变更与当前有效用例集合进行一次完整语义比对，逐条分类为保留、修改、新增、明确退役或身份待核对。业务匹配和语义判断由 AI 完成，不能由 Python、标题相似度或固定关键字自动决定。
@@ -156,11 +156,11 @@ P4 候选为聊天报告的可选建议内容，不是正式用例产物或测�
 常用命令（从工程根目录执行）：
 
 ```powershell
-python -B skills/testcase-design/tools/manifest.py directory-name <需求编号> "<需求名称>"
-python -B skills/testcase-design/tools/manifest.py inspect output/【<模块>】/<需求编号>-<需求名称>
-python -B skills/testcase-design/tools/manifest.py ids output/【<模块>】/<需求编号>-<需求名称> <需求编号> --count 3 --baseline-manifest output/【<模块>】/<需求编号>-<需求名称>/versions/<最新版本>/manifest.json
-python -B skills/testcase-design/tools/manifest.py publish output/【<模块>】/<需求编号>-<需求名称> .qa-work/publish-spec.json
-python -B skills/testcase-design/tools/manifest.py validate output/【<模块>】/<需求编号>-<需求名称>
+python -B skills/testcase-design/tools/manifest.py directory-name <需求编号> "<需求名称>" --module-id <module> --module-name "<moduleName>"
+python -B skills/testcase-design/tools/manifest.py inspect output/<module_directory_name>/<需求编号>-<需求名称>
+python -B skills/testcase-design/tools/manifest.py ids output/<module_directory_name>/<需求编号>-<需求名称> <需求编号> --count 3 --baseline-manifest output/<module_directory_name>/<需求编号>-<需求名称>/versions/<最新版本>/manifest.json
+python -B skills/testcase-design/tools/manifest.py publish output/<module_directory_name>/<需求编号>-<需求名称> .qa-work/publish-spec.json
+python -B skills/testcase-design/tools/manifest.py validate output/<module_directory_name>/<需求编号>-<需求名称>
 ```
 
 `partial` 是本次交付状态，不改变既有有效用例基线，也不具备直接导入禅道或 ACE 的资格。本 Skill 当前不自动执行平台导入、SQL 或业务测试。

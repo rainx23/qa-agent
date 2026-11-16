@@ -207,7 +207,7 @@ MCP 是可选的外部能力，不是仓库自带服务。只有任务依赖需�
 
 ```text
 output/
-└── 【模块】/
+└── 【<禅道 moduleName>】/
     └── <需求编号>-<原始完整需求标题>/
         ├── versions/
         │   └── <YYYYMMDD-vN>/
@@ -222,7 +222,7 @@ output/
             └── <YYYYMMDD-vN>/
 ```
 
-- 模块目录保留需求标题中的第一个全角 `【模块】` 标识（含括号）；需求标题不含该标识时自动归入 `output/【未分类】/`。
+- 一级模块目录使用禅道需求详情真实 `moduleName`，外层统一添加 `【】`（例如 `【销售结果】`）；首次归档前按 `skills/testcase-design/references/output-archive.md` 校验需求 ID、模块 ID 和模块名称。不得从需求标题括号推断模块；模块信息缺失时停止创建目录。
 - 需求目录保留原始完整标题，不擅自删除括号或改写名称。
 - `versions/<版本>/manifest.json` 是该需求的版本与正式产物索引。
 - `testcases/`、`analysis/`、`sql/`、`api-automation/` 只在对应类型有正式产物时创建，不预建空目录；同一需求共用版本序列，历史版本通过 Manifest 延续引用，不覆盖历史文件。
