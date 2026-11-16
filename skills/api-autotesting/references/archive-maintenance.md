@@ -5,10 +5,10 @@
 ## 输出、索引与历史资产维护
 
 - 对话交付信息按本次任务类型与实际范围选择；相关证据由对应任务提供。不得把设计完成、保存成功、Debug 成功和正式 Run PASS 混为一谈。简要结论优先，详细证据按需提供。
-- **需求绑定型正式产物**沿用 `output/【<禅道moduleName>】/<需求编号>-<完整需求标题>/api-automation/<YYYYMMDD>-vN/`，Manifest 位于需求根目录 `versions/<YYYYMMDD-vN>/manifest.json`，与 P1/P2/P3 共用需求级版本序列；不另建接口自动化版本账本。一级模块目录按 `skills/testcase-design/references/output-archive.md` 使用禅道真实 `moduleName`，不从标题括号推断。新需求首次归档前核对禅道需求 ID、模块 ID/名称；已有需求先定位现存根目录并沿用 Manifest 冻结模块元数据。需求目录保留完整标题和括号。P1 的 Markdown+XMind 展示规范不机械套用于 ZeroRunner Case/执行报告。
+- **需求绑定型正式产物**沿用 `output/【<moduleName>】/<需求编号>-<完整需求标题>/api-automation/<YYYYMMDD>-vN/`，Manifest 位于需求根目录 `versions/<YYYYMMDD-vN>/manifest.json`，与 P1/P2/P3 共用需求级版本序列；不另建接口自动化版本账本。一级模块目录按 `skills/testcase-design/references/output-archive.md` 使用需求管理平台返回的真实 `moduleName`，不从标题括号推断。新需求首次归档前核对需求管理平台中的需求 ID、模块 ID/名称；已有需求先定位现存根目录并沿用 Manifest 冻结模块元数据。需求目录保留完整标题和括号。P1 的 Markdown+XMind 展示规范不机械套用于接口自动化平台 Case/执行报告。
 - **项目级接口覆盖索引**统一保存在 `output/api-automation/index.json`，每接口独立维护于 `output/api-automation/interfaces/<API Code>.json`。这两类 JSON 是当前有效基线，不放在 `skills/api-autotesting/`，也不按每次执行创建快照。
 - **需求关联的可读分析/设计产物**放在对应需求根目录的 `api-automation/<YYYYMMDD>-vN/`，并在 `versions/<YYYYMMDD>-vN/manifest.json` 中登记 `category: api-automation`；项目级索引仅关联需求产物、源码 SHA、Case/Report 等必要身份，不复制完整内容。
-- 不复制完整源码、Git 历史、P3 完整分析产物、ZeroRunner 请求响应、Step 日志或完整平台报告；这些内容分别由源码仓库、既有需求产物或 ZeroRunner 平台保存。Markdown 用于可读分析/设计依据，JSON 用于轻量索引。
+- 不复制完整源码、Git 历史、P3 完整分析产物、接口自动化平台请求响应、Step 日志或完整平台报告；这些内容分别由源码仓库、既有需求产物或接口自动化平台保存。Markdown 用于可读分析/设计依据，JSON 用于轻量索引。
 - 默认维护当前有效基线并增量更新对应接口 JSON，不为每次分析或执行创建整份历史快照。退役场景保留身份和必要追溯关系；不覆盖需求正式历史版本，不删除平台历史执行记录。
 
 ## 本地接口索引结构与当前/历史映射
@@ -20,6 +20,7 @@
 ## 场景来源与需求变更追溯
 
 - `scenarios[]` 增加稳定的 `scenario_key`（本地生成，如 `SCN-000001`），作为场景长期身份；平台重新保存后即使 Step ID 重建、Step 顺序变化或名称调整，也必须保留原 `scenario_key`，不得用平台 Step ID 充当稳定身份。
+- **Step ID 重建映射**：平台重新保存导致 Step ID 变化时，保留 `scenario_key`、`step_id`、`source_step_id` 不变；将变更前的 `current_step_id` 追加到 `historical_current_step_ids[]`（按时间顺序去重），再把最新平台 ID 写入 `current_step_id`。若新旧 ID 相同，不重复追加；无当前平台 Step 的历史场景保持 `current_step_id: null`。多个 `scenario_key` 因场景合并而映射到同一个当前 Step 时，允许共享 `current_step_id`，不得为追求一对一而拆分或虚构平台 Step。
 - `origin_type` 与本次变更动作分开记录：`INITIALIZATION` 表示该场景在接口首次建立可信自动化基线时引入；`REQUIREMENT_INCREMENT` 表示该场景由某个需求首次引入；`BASELINE_IMPORTED` 仅用于迁移已有历史资产但无法可靠追溯首次引入来源的场景，不得伪造需求编号或把未知来源写成已确认初始化。
 - `origin_requirement_id` 记录首次引入该场景的需求编号：仅 `REQUIREMENT_INCREMENT` 必填；`INITIALIZATION`、`BASELINE_IMPORTED` 留空。首次来源不可因后续需求更新而改变。
 - `last_changed_requirement_id` 记录追溯体系启用后，最近一次有证据的实质改变该场景请求、触发条件、断言或启停/退役状态的需求编号；仅 KEEP、重新执行、平台 Step ID 重建或仅同步报告结果，不算场景内容变更，不更新此字段。对于 `BASELINE_IMPORTED` 历史资产，字段为空表示迁移后尚无可确认的变更记录，不代表其历史上从未修改。
@@ -63,7 +64,7 @@
 
 - 若本次涉及接口身份、源码分析、场景设计或增量更新，检查接口身份/目标版本、相关前后端证据、场景覆盖去向和回归范围。
 - 若本次涉及请求构造或断言，检查请求契约、UAT 目标、必要认证处理及断言依据。
-- 若本次涉及 ZeroRunner Case/Step 操作、Debug、正式 Run 或报告判定，检查相应平台操作边界及本次真实报告证据。
+- 若本次涉及接口自动化平台 Case/Step 操作、Debug、正式 Run 或报告判定，检查相应平台操作边界及本次真实报告证据。
 - 若本次涉及本地索引、历史映射或归档，检查索引对象、当前/历史字段映射、必要变更、历史保留及文件写入结果。
 - **仅维护索引/归档的任务**只需检查本次索引对象、字段结构/映射、变更边界、历史保留和写入结果；不要求补充无关源码证据、场景覆盖、请求断言或执行报告。
 
