@@ -127,9 +127,9 @@ P4 候选为聊天报告的可选建议内容，不是正式用例产物或测�
 - ACE 使用六项真实关联字段（product_id、dir_id、project_id、project_name、story_id、story_name），按现有优先级映射一次创建完整需求 MindMap。
 - ACE 不要求目录下 MindMap 清单枚举或额外优先级 live 验真；创建接口明确返回成功和唯一 MindMap ID 时直接确认。若成功标志缺失但返回唯一 ID，则按 ID 回读核对标题、产品 ID 和完整节点树；回读缺失的目录/迭代/需求关联字段标记 NOT_PROVEN，不冒充验证通过。无唯一 ID 或回读失败时标记 UNKNOWN_OUTCOME，禁止重试。
 - 任一平台写入结果不明时停止并报告，不自动重试；不因缺少非必要回读或目录清单而阻断正常导入。
+- 平台写操作 CLI/MCP 必须先完整保留原始 stdout、stderr（或完整合并输出）及退出码，再生成摘要；PowerShell 使用 `Tee-Object` 或等效方式将完整回执落盘。禁止在唯一回执流上使用 `Select-Object -First/-Last`、`head`、`tail` 等截断/过滤；只能对已落盘副本摘要。必须从完整回执解析并保存唯一平台 ID；ID 丢失时按 `UNKNOWN_OUTCOME` 处理且禁止重试/重复创建。
 
 ## Manifest 与正式版本发布
-
 正式用例交付和增量续接必须遵循 `references/artifact-format.md` 的 Manifest 数据契约，并使用统一工具 `tools/manifest.py`；不另建数据库、历史账本或专用版本脚本。
 
 ### 增量任务启动
