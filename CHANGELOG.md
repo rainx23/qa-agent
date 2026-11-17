@@ -4,6 +4,15 @@
 
 **状态说明**：自 2026-11-16 起，Unreleased 只保留仍在进行的工作；每项优化本轮实施结束后立即按当天日期归档，后续 Commit/Push、Codex/Gemini 验收结果直接更新原条目，不等待 GitHub Release。历史遗留条目不推测日期或状态、不批量搬动。单元测试通过不等于外部平台或业务验收通过。
 
+## 2026-11-17
+
+### P3 SQL CTE 声明排版检查
+
+- 明确首个 CTE 使用 `with v_name as (`、后续使用 `, v_name as (`，禁止在 CTE 声明中拆分关键片段；不限制查询体换行，不改变业务 SQL、方言或归档流程。
+- 在现有 `check_sql_style.py` 的 CTE 识别中补齐跨行声明识别，保留 `v_` 前缀检查，并新增合成正反例、嵌套 CTE、注释/字符串误报及完整 CLI 检查回归。
+- **实施状态：本地工程回归 P3 unittest 36/36 PASS、`git diff --check` PASS（Windows 换行提示非阻断）；Codex 独立验收 NOT_RUN；真实需求 SQL 不改写、不执行，业务验收 NOT_RUN。**
+- **GitHub：本轮未 Commit/Push。**
+
 ## 2026-11-16
 
 ### P5 Case 标题命名规范与场景身份映射
