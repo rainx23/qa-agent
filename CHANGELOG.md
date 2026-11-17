@@ -6,6 +6,14 @@
 
 ## 2026-11-17
 
+### P2 禅道 Bug 正文 HTML 分段格式
+
+- 明确 Bug 正文使用 `<h4>`、`<p>`、`<table>` 实现章节、段落和表格分段，不再依赖普通 `\n` / `\n\n` 作为页面换行；表格属性使用单引号。
+- 保留现有 `step`、`stepResult`、`expectation` 字段职责及逐条授权、创建回执和归档流程；不强制简单缺陷使用复杂模板。
+- **本地验证：** P2 unittest 21/21 PASS；`git diff --check` PASS。
+- **外部边界：** 当前 QA Agent 的 createBug 页面实际渲染未单独实测，标记 `NOT_VERIFIED`；本轮不创建测试 Bug、不执行平台写入。
+- **GitHub：本轮未 Commit/Push。**
+
 ### P3 SQL CTE 声明排版检查
 
 - 明确首个 CTE 使用 `with v_name as (`、后续使用 `, v_name as (`；声明必须在同一行，且 `as (` 必须作为行尾，下一行缩进后以 `select` 开始。
