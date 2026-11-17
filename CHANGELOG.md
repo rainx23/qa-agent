@@ -8,9 +8,9 @@
 
 ### P3 SQL CTE 声明排版检查
 
-- 明确首个 CTE 使用 `with v_name as (`、后续使用 `, v_name as (`，禁止在 CTE 声明中拆分关键片段；不限制查询体换行，不改变业务 SQL、方言或归档流程。
-- 在现有 `check_sql_style.py` 的 CTE 识别中补齐跨行声明识别，保留 `v_` 前缀检查，并新增合成正反例、嵌套 CTE、注释/字符串误报及完整 CLI 检查回归。
-- **实施状态：本地工程回归 P3 unittest 36/36 PASS、`git diff --check` PASS（Windows 换行提示非阻断）；Codex 独立验收 NOT_RUN；真实需求 SQL 不改写、不执行，业务验收 NOT_RUN。**
+- 明确首个 CTE 使用 `with v_name as (`、后续使用 `, v_name as (`；声明必须在同一行，且 `as (` 必须作为行尾，下一行缩进后以 `select` 开始。
+- 在现有 `check_sql_style.py` 中同时检查 CTE 声明换行与查询体起始换行，修正原测试将 `as (select ...)` 误判为正确格式的问题；补充首个/后续 CTE 的正确格式与两类错误格式回归。
+- **实施状态：P3 unittest 38/38 PASS；本次需求 SQL 新版风格检查 PASS、CTE 结构检查 PASS；Manifest 发布及完整历史验签 PASS。旧版本保留，业务逻辑不变；SQL 数据库执行 NOT_RUN，Codex 独立验收 NOT_RUN。**
 - **GitHub：本轮未 Commit/Push。**
 
 ## 2026-11-16

@@ -148,7 +148,7 @@ def check_commas(code: str, sql: str, issues: list[tuple[int, str]]) -> None:
 
 
 def check_ctes(code: str, sql: str, issues: list[tuple[int, str]]) -> None:
-    # 复用现有 CTE 识别（含显式列名列表），同时检查声明的物理行布局。
+    # CTE 声明保持单行，查询体的 select 从下一行开始。
     pattern = re.compile(
         r"\bwith\s+(?:recursive\s+)?"
         r"([A-Za-z_][A-Za-z0-9_$]*)(?:\s*\([^)]*\))?\s+as\s*\("
@@ -161,6 +161,9 @@ def check_ctes(code: str, sql: str, issues: list[tuple[int, str]]) -> None:
             add(issues, sql, match.start(), f"CTE 名称必须使用 v_ 前缀：{name}")
         if "\n" in code[match.start():match.end()]:
             add(issues, sql, match.start(), f"CTE 声明必须在同一行（with v_name as ( / , v_name as (）：{name}")
+        body_start = match.end()
+        if not re.match(r"[ \t]*\r?\n[ \t]*select\b", code[body_start:], re.I):
+            add(issues, sql, body_start - 1, f"CTE 查询体的 select 必须另起一行（as ( 后换行）：{name}")
 
 
 def enclosing_parenthesis_map(code: str) -> list[int]:
@@ -365,7 +368,7 @@ def main(argv: list[str]) -> int:
 
     print(
         "P3_SQL_STYLE_SCOPE: 文件头、常见 SQL 关键字大小写、顶层逗号、同一查询层级内简单关系 FROM/JOIN 别名（跳过函数调用参数语法中的 FROM，如 EXTRACT/SUBSTRING/TRIM；不受同深度已结束 SELECT 影响）、"
-        "支持列名列表的 v_ CTE 与单行声明格式、任意投影列的 SELECT * / alias.*、顶层 SELECT 输出注释及显式 AS 别名（含双引号）；"
+        "支持列名列表的 v_ CTE 单行声明、as ( 后换行且下一行以 select 开始、任意投影列的 SELECT * / alias.*、顶层 SELECT 输出注释及显式 AS 别名（含双引号）；"
         "不解析方言、字段存在性、复杂表函数/子查询别名或业务语义。"
     )
     issues = sorted(set(issues))
