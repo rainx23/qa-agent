@@ -4,7 +4,33 @@
 
 **状态说明**：自 2026-11-16 起，Unreleased 只保留仍在进行的工作；每项优化本轮实施结束后立即按当天日期归档，后续 Commit/Push、Codex/Gemini 验收结果直接更新原条目，不等待 GitHub Release。历史遗留条目不推测日期或状态、不批量搬动。单元测试通过不等于外部平台或业务验收通过。
 
+## 2026-11-19
+
+### P3｜Codex 审查兼容性整改
+
+- 已确认的需求/P1/现有可信页面证据直接复用；仅存在缺口时才定向读取 P4，避免对 P2 委派和独立 P3 增加重复检索。
+- 元数据 MCP 探索恢复只读权限校验及不可用/连接失败的 `MCP_UNAVAILABLE` 处理；修正 Skill 步骤编号换行，精简重复表述。
+- 验证：P3 unittest 38/38、P2 unittest 21/21、定向规则/编号检查及 Git Diff 检查均 PASS；Codex 独立复验 OVERALL：PASS（三项必改已关闭）；数据库 NOT_RUN，MCP 运行态、SQL 业务正确性与 Token 收益 NOT_VERIFIED。
+
+### P3｜SQL 语义自审补强
+
+- 在现有业务反证中检查验证目标可达、F/V 集合完整、去重及分母依据、动态参数替换，避免上游过滤让下游验证数据永远不可达。
+- 发现确定逻辑错误先修，关键缺证局部阻断；静态检查通过不代表业务正确。无新增 Python 检查器/独立门禁。
+- 验证：P3 unittest 38/38 PASS、P2 unittest 21/21 PASS、`git diff --check` PASS；SQL 业务正确性与 Token 收益 NOT_VERIFIED；Codex 工程规则独立复验 PASS。
+
+### P3｜已确证来源优先复用与元数据按需核查
+
+- 需求、有效 P1 Oracle 或 P4 正式知识明确的表字段和业务含义直接复用，不默认逐字段调用 Schema、血缘或源码。
+- 仅对影响 SQL 正确性的关键缺口定向探查；超长响应或不可访问工具不跨等价路径反复试错。保留关键粒度、JOIN、过滤、Oracle 自审与实际运行状态区分。
+- 验证：P3 unittest 38/38 PASS、P2 unittest 21/21 PASS、`git diff --check` PASS；Token/业务收益 NOT_VERIFIED，Codex 工程规则独立复验 PASS。
+
 ## 2026-11-18
+
+### P3｜页面维度先核实与缺证暂停
+
+- 页面/Tab/查询模式直接影响 SQL 粒度、分组和业务有效条件时，生成前定向核对现有 P4 正式知识及需求 Oracle；不全量加载知识。
+- 关键业务维度缺少可靠依据时暂停受影响 SQL，询问用户，不用通用键或猜测条件替代；业务维度已确认但技术键缺证时定向核实，未确认局部阻断。保留不依赖缺口的场景。
+- 验证：独立复跑 P3 unittest 38/38 PASS、P2 unittest 21/21 PASS、`git diff --check` PASS；独立验收仍 PENDING，未执行数据库 SQL，业务与运行性能 NOT_VERIFIED。
 
 ### P3｜业务场景一次输出与边界条件切换
 
