@@ -13,6 +13,12 @@
 - Codex 2026-11-23 第一轮独立复核 `NEED_FIX`：修复 P3 入口第 5/6 步换行和 `PARTIAL` 判定，588620 工作稿增加运单聚合防重、源记录计数/零值边界、E 原始证据与 S4/S5 正负对照，并修正附录 B 视图与 HK/BC 明细的对应关系；仍不将未确认字段变成事实。
 - 验证：2026-11-23 Codex 第二轮只读独立复验 **OVERALL PASS（5/5）**；P3 unittest 38/38 PASS、P2 unittest 21/21 PASS，588620 SQL 风格 `P3_SQL_STYLE_PASS`、CTE 作用域 `P3_SQL_SCOPE_PASS`，`git diff --check HEAD` PASS。**工程规则/静态工作稿验收已完成**；588620 S1–S5 仍 BLOCKED，目标引擎解析 NOT_VERIFIED、数据库 NOT_RUN，业务正确性与实际性能未验证。不新增工具或门禁，未 Commit/Push。
 
+### P3｜非 Hive 来源向已核实的业务表/视图适配
+
+- 目标 Presto/Hive 查询需要使用来自其他数据源的业务表时，区分“已有可信直查证据”与“已知不可直查或缺少可信直查证据”：前者保留原表，后者定向核实适用的 Hive/VDM 业务表或视图（如 `v_o_`），确认字段、关联键、对象与粒度后再使用。不能凭名称推断表的存在性或类型，不改变独立 Oracle 或业务过滤。
+- 仅在有实际来源兼容性疑点时触发，不强制对已确认 Hive 表例行查询元数据，不新增程序门禁。目标引擎、同步有效性、分区/有效记录口径未经实证时维持 NOT_VERIFIED；数据库未执行保持 NOT_RUN。
+- Codex 第一轮独立复核 `NEED_FIX` 后修正入口与指南的触发条件一致性、明确 Hive 镜像物理表（`CREATE TABLE` ORC）与真正的 Hive 视图（`CREATE VIEW`）不可混称；第二轮只读独立复验 **OVERALL PASS（2/2）**，SQL JOIN/OR/运单粒度回归 PASS，P3 38/38、P2 21/21、SQL 风格/CTE 作用域、Git diff 检查 PASS。588620 业务 F/V 仍 BLOCKED、目标解析 NOT_VERIFIED、数据库 NOT_RUN；无实测数据正确性或性能收益结论。未执行 Commit/Push。
+
 ## 2026-11-19
 
 ### P2｜Bug 提交正文排版修正
